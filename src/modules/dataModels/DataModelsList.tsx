@@ -1,4 +1,3 @@
-
 import React, { useMemo, useState } from "react";
 
 /**
@@ -7,6 +6,9 @@ import React, { useMemo, useState } from "react";
  * - Matches the "snazzy" list styling (header + one-liner + actions + hover rows)
  */
 
+// ================================================
+// START - Type Definitions
+// ================================================
 export type DataModelsListProps = {
   models: any[];
   architectureSystemOptions: { value: string; label: string }[];
@@ -31,6 +33,9 @@ export type DataModelsListProps = {
   Input: React.ComponentType<{ value: string; onChange: (v: string) => void; placeholder?: string }>;
   Select: React.ComponentType<{ value: string; onChange: (v: string) => void; options: { value: string; label: string }[] }>;
 };
+// ================================================
+// END - Type Definitions
+// ================================================
 
 export default function DataModelsList(props: DataModelsListProps) {
   const {
@@ -48,8 +53,17 @@ export default function DataModelsList(props: DataModelsListProps) {
     Select,
   } = props;
 
+  // ================================================
+  // START - Local State
+  // ================================================
   const [hoveredModelId, setHoveredModelId] = useState<string>("");
+  // ================================================
+  // END - Local State
+  // ================================================
 
+  // ================================================
+  // START - Computed Data
+  // ================================================
   const filtered = useMemo(() => {
     const q = (search ?? "").trim().toLowerCase();
     return (models ?? [])
@@ -65,6 +79,9 @@ export default function DataModelsList(props: DataModelsListProps) {
         return String(a.entity ?? "").localeCompare(String(b.entity ?? ""));
       });
   }, [models, search, systemFilter]);
+  // ================================================
+  // END - Computed Data
+  // ================================================
 
   return (
     <Panel title="Data Models">

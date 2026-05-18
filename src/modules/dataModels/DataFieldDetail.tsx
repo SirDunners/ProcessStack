@@ -11,6 +11,9 @@ import React, { useMemo, useState } from "react";
  *    - Placeholder sections for Integrations / Data Journey
  */
 
+// ================================================
+// START - Type Definitions
+// ================================================
 export type DataFieldUsage = {
   transaction_id: string;
   transaction_name: string;
@@ -42,10 +45,19 @@ export type DataFieldDetailProps = {
     disabled?: boolean;
   }>;
 };
+// ================================================
+// END - Type Definitions
+// ================================================
 
+// ================================================
+// START - Helper Functions
+// ================================================
 function displayModelName(m: any) {
   return `${m.system} > ${m.entity}`;
 }
+// ================================================
+// END - Helper Functions
+// ================================================
 
 export default function DataFieldDetail(props: DataFieldDetailProps) {
   const {
@@ -59,8 +71,17 @@ export default function DataFieldDetail(props: DataFieldDetailProps) {
     Button,
   } = props;
 
+  // ================================================
+  // START - Local State
+  // ================================================
   const [hoveredTrxId, setHoveredTrxId] = useState<string>("");
+  // ================================================
+  // END - Local State
+  // ================================================
 
+  // ================================================
+  // START - Computed Data
+  // ================================================
   const usage = useMemo(() => {
     return [...(usedInTransactions ?? [])].sort((a, b) => {
       const an = String(a.transaction_name ?? "");
@@ -70,24 +91,26 @@ export default function DataFieldDetail(props: DataFieldDetailProps) {
       return String(a.step_id ?? "").localeCompare(String(b.step_id ?? ""));
     });
   }, [usedInTransactions]);
+  // ================================================
+  // END - Computed Data
+  // ================================================
 
   return (
     <Panel title="Data Models">
       <div style={{ display: "grid", gap: 12 }}>
 
-{/* Top bar */}
-<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-  <Button variant="secondary" onClick={onBackToModel}>
-    ← Back to {displayModelName(model)}
-  </Button>
+        {/* Top bar */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <Button variant="secondary" onClick={onBackToModel}>
+            ← Back to {displayModelName(model)}
+          </Button>
 
-  {onDeleteField ? (
-    <Button variant="ghost" onClick={onDeleteField}>
-      Delete Field
-    </Button>
-  ) : null}
-</div>
-
+          {onDeleteField ? (
+            <Button variant="ghost" onClick={onDeleteField}>
+              Delete Field
+            </Button>
+          ) : null}
+        </div>
 
         {/* ===================== FIELD SUMMARY (START) ===================== */}
         <div

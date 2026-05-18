@@ -1,7 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import TransactionsList from "./TransactionsList";
 import TransactionDetail from "./TransactionDetail";
 
+// ================================================
+// START - Type Definitions
+// ================================================
 export type TransactionsTabProps = {
   data: any;
   setData: React.Dispatch<React.SetStateAction<any>>;
@@ -30,6 +33,9 @@ export type TransactionsTabProps = {
   getAvatarForPersona?: (persona: any) => any;
   updateTransaction: (updater: (t: any) => any) => void;
 };
+// ================================================
+// END - Type Definitions
+// ================================================
 
 export default function TransactionsTab(props: TransactionsTabProps) {
 
@@ -52,29 +58,39 @@ export default function TransactionsTab(props: TransactionsTabProps) {
     updateTransaction,
   } = props;
   
-
+  // ================================================
+  // START - Local State
+  // ================================================
   const [view, setView] = useState<"list" | "detail">("list");
-  const autoOpenedRef = useRef(false);
+  
+  // ================================================
+  // END - Local State
+  // ================================================
 
+  // ================================================
+  // START - Computed Data
+  // ================================================
   const selectedTransaction = useMemo(() => {
     return (data.transactions ?? []).find((t: any) => t.transaction_id === selectedTransactionId);
   }, [data.transactions, selectedTransactionId]);
+  // ================================================
+  // END - Computed Data
+  // ================================================
 
-  
-  // If we navigated here from another tab (e.g., Processes) with a transaction already selected,
-  // jump straight to detail view.
-
-    useEffect(() => {
-      // Auto-open detail only once on first entry to Transactions
-      if (autoOpenedRef.current) return;
-    
-      if (selectedTransactionId) {
-        setView("detail");
-        autoOpenedRef.current = true;
-      }
-    }, [selectedTransactionId]);
-  
-
+  // ================================================
+  // START - Effects
+  // ================================================
+  // Sync view to selectedTransactionId (single source of truth)
+  useEffect(() => {
+    if (selectedTransactionId) {
+      setView("detail");
+    } else {
+      setView("list");
+    }
+  }, [selectedTransactionId]);
+  // ================================================
+  // END - Effects
+  // ================================================
 
   return (
     <Panel title="Transactions">
@@ -92,14 +108,18 @@ export default function TransactionsTab(props: TransactionsTabProps) {
           Select={Select}
           onOpenTransaction={(trxId) => {
             setSelectedTransactionId(trxId);
-            setView("detail");
           }}
         />
       ) : (
         <div style={{ display: "grid", gap: 12 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
 
-          <Button variant="secondary" onClick={() => setView("list")}>
+          <Button 
+            variant="secondary" 
+            onClick={() => {
+              setSelectedTransactionId("");   // clears ID → useEffect switches back to list
+            }}
+          >
           {"<- Back to Transactions"}
           </Button>
 
@@ -125,6 +145,7 @@ export default function TransactionsTab(props: TransactionsTabProps) {
             updateTransaction={updateTransaction}
             onOpenProcessStep={onOpenProcessStep}
             getAvatarForPersona={getAvatarForPersona}
+            onOpenTransaction={(trxId) => setSelectedTransactionId(trxId)}   // now correctly passed
           />
 
         </div>

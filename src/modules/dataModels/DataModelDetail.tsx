@@ -7,6 +7,9 @@ import React, { useMemo, useState } from "react";
  * - Edit Model uses a modal (re-uses the create-model form shape) but (recommended) only edits version/status/description
  */
 
+// ================================================
+// START - Type Definitions
+// ================================================
 export type DataModelDetailProps = {
   model: any;
   updateModel: (updater: (m: any) => any) => void;
@@ -41,10 +44,19 @@ export type DataModelDetailProps = {
   standardCustomOptions: { value: string; label: string }[];
   fieldTypeOptions: { value: string; label: string }[];
 };
+// ================================================
+// END - Type Definitions
+// ================================================
 
+// ================================================
+// START - Helper Functions
+// ================================================
 function displayModelName(m: any) {
   return `${m.system} > ${m.entity}`;
 }
+// ================================================
+// END - Helper Functions
+// ================================================
 
 export default function DataModelDetail(props: DataModelDetailProps) {
   const {
@@ -67,6 +79,9 @@ export default function DataModelDetail(props: DataModelDetailProps) {
     fieldTypeOptions,
   } = props;
 
+  // ================================================
+  // START - Local State
+  // ================================================
   const [addFieldOpen, setAddFieldOpen] = useState(false);
   const [hoveredFieldId, setHoveredFieldId] = useState<string>("");
 
@@ -102,7 +117,13 @@ export default function DataModelDetail(props: DataModelDetailProps) {
     enum_csv: "",
     reference_to: "",
   });
+  // ================================================
+  // END - Local State
+  // ================================================
 
+  // ================================================
+  // START - Computed Data
+  // ================================================
   const fields = (model.fields ?? []) as any[];
 
   const previewFieldId = useMemo(() => {
@@ -112,7 +133,13 @@ export default function DataModelDetail(props: DataModelDetailProps) {
       return "(auto)";
     }
   }, [model.model_id, fields, nextFieldId]);
+  // ================================================
+  // END - Computed Data
+  // ================================================
 
+  // ================================================
+  // START - Helper Functions (inside component)
+  // ================================================
   function openEdit() {
     setEditDraft({
       version: model.version ?? "1.0",
@@ -190,6 +217,9 @@ export default function DataModelDetail(props: DataModelDetailProps) {
     resetFieldDraft();
     setAddFieldOpen(false);
   }
+  // ================================================
+  // END - Helper Functions (inside component)
+  // ================================================
 
   return (
     <Panel title="Data Models">
@@ -207,7 +237,6 @@ export default function DataModelDetail(props: DataModelDetailProps) {
             </Button>
           ) : null}
         </div>
-
 
         {/* ===================== MODEL SUMMARY (START) ===================== */}
         <div

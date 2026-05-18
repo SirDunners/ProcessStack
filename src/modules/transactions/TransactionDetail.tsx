@@ -1,5 +1,8 @@
 import React, { useMemo, useState } from "react";
 
+// ================================================
+// START - Type Definitions
+// ================================================
 type TransactionDetailProps = {
   data: any;
   setData: React.Dispatch<React.SetStateAction<any>>;
@@ -72,7 +75,13 @@ type EmittedEvent = {
   when: string;
   entity: string;
 };
+// ================================================
+// END - Type Definitions
+// ================================================
 
+// ================================================
+// START - Helper Functions
+// ================================================
 const uid = () => Math.random().toString(16).slice(2) + Date.now().toString(16);
 
 function badgeStyle(kind: StepType) {
@@ -88,6 +97,9 @@ function badgeStyle(kind: StepType) {
   if (kind === "navigation") return { ...base, background: "#f4f4f4" };
   return { ...base, background: "#fff7e6", borderColor: "#ffd89b" };
 }
+// ================================================
+// END - Helper Functions
+// ================================================
 
 export default function TransactionDetail(props: TransactionDetailProps) {
   const {
@@ -107,24 +119,33 @@ export default function TransactionDetail(props: TransactionDetailProps) {
     updateTransaction,
     onOpenProcessStep,
     getAvatarForPersona,
+    onOpenTransaction,
   } = props;
 
-  // -------------------------
-  // Local UI state (detail-only)
-  // -------------------------
 
-  // Allowed Personas picker
+
+  // ================================================
+  // START - Early Guard (moved to top - fixes the crash)
+  // ================================================
+  if (!selectedTransaction) {
+    return <div style={{ color: "#6b7280", padding: 40 }}>No transaction selected.</div>;
+  }
+  // ================================================
+  // END - Early Guard
+  // ================================================
+
+  // ================================================
+  // START - Local UI State
+  // ================================================
   const [personaToAddId, setPersonaToAddId] = useState<string>("");
   const [personaEditMode, setPersonaEditMode] = useState(false);
 
-  // Flow links (inline add for now; you’ll modal-ise later)
   const [linkDirection, setLinkDirection] = useState<"next" | "prev">("next");
   const [linkTargetId, setLinkTargetId] = useState<string>("");
   const [linkType, setLinkType] = useState<LinkType>("mandatory");
   const [linkLabel, setLinkLabel] = useState<string>("");
   const [linkCondition, setLinkCondition] = useState<string>("");
 
-  // Steps CRUD
   const [stepDraft, setStepDraft] = useState<{
     type: StepType;
     action: string;
@@ -141,11 +162,9 @@ export default function TransactionDetail(props: TransactionDetailProps) {
     required_fields_search: "",
   });
 
-
   const [editStepOpen, setEditStepOpen] = useState(false);
   const [editStepId, setEditStepId] = useState<string | null>(null);
 
-  // System Actions CRUD
   const [actionDraft, setActionDraft] = useState<{
     action_type: SystemActionType;
     trigger: SystemActionTrigger;
@@ -163,7 +182,6 @@ export default function TransactionDetail(props: TransactionDetailProps) {
   const [editActionOpen, setEditActionOpen] = useState(false);
   const [editActionId, setEditActionId] = useState<string | null>(null);
 
-  // Emitted Events CRUD
   const [eventDraft, setEventDraft] = useState<{ event_type: string; when: string; entity: string }>({
     event_type: "",
     when: "On Save",
@@ -172,86 +190,81 @@ export default function TransactionDetail(props: TransactionDetailProps) {
 
   const [editEventOpen, setEditEventOpen] = useState(false);
   const [editEventIndex, setEditEventIndex] = useState<number | null>(null);
+  // ================================================
+  // END - Local UI State
+  // ================================================
 
-  // -------------------------
-  // Derived data
-  // -------------------------
-
+  // ================================================
+  // START - Derived Data
+  // ================================================
   const allLinks: TransactionLink[] = (data?.transaction_links ?? []) as TransactionLink[];
 
   const linkedSteps = useMemo(() => {
     return getLinkedProcessStepsForTransaction(selectedTransactionId) ?? [];
   }, [getLinkedProcessStepsForTransaction, selectedTransactionId]);
 
-// -------------------------
-// Data Models (for DATA steps)
-// -------------------------
-const dataModels = (data?.data_models ?? []) as any[];
+  const dataModels = (data?.data_models ?? []) as any[];
 
-const dataModelOptions = useMemo(() => {
-  return dataModels
-    .map((m: any) => ({
-      value: m.model_id,
-      label: `${m.system} > ${m.entity}`,
-    }))
-    .sort((a: any, b: any) => a.label.localeCompare(b.label));
-}, [dataModels]);
+  const dataModelOptions = useMemo(() => {
+    return dataModels
+      .map((m: any) => ({
+        value: m.model_id,
+        label: `${m.system} > ${m.entity}`,
+      }))
+      .sort((a: any, b: any) => a.label.localeCompare(b.label));
+  }, [dataModels]);
 
-function getModelById(model_id: string) {
-  return dataModels.find((m: any) => m.model_id === model_id);
-}
+  function getModelById(model_id: string) {
+    return dataModels.find((m: any) => m.model_id === model_id);
+  }
 
-function resolveFieldIds(model_id: string, tokens: string[]) {
-  // Migrates older tokens (like "jobCode") to internal field IDs if possible.
-  // If token already looks like a field_id (starts with model_id.), keep it.
-  const model = getModelById(model_id);
-  const fields = model?.fields ?? [];
-  const byId = new Map<string, any>();
-  const bySource = new Map<string, any>();
+  function resolveFieldIds(model_id: string, tokens: string[]) {
+    const model = getModelById(model_id);
+    const fields = model?.fields ?? [];
+    const byId = new Map<string, any>();
+    const bySource = new Map<string, any>();
 
-  fields.forEach((f: any) => {
-    if (f?.field_id) byId.set(String(f.field_id), f);
-    if (f?.source_field_code) bySource.set(String(f.source_field_code).toLowerCase(), f);
-  });
+    fields.forEach((f: any) => {
+      if (f?.field_id) byId.set(String(f.field_id), f);
+      if (f?.source_field_code) bySource.set(String(f.source_field_code).toLowerCase(), f);
+    });
 
-  const out: string[] = [];
-  (tokens ?? []).forEach((t) => {
-    const token = String(t ?? "").trim();
-    if (!token) return;
+    const out: string[] = [];
+    (tokens ?? []).forEach((t) => {
+      const token = String(t ?? "").trim();
+      if (!token) return;
 
-    if (token.startsWith(model_id + ".")) {
-      out.push(token);
-      return;
-    }
+      if (token.startsWith(model_id + ".")) {
+        out.push(token);
+        return;
+      }
 
-    const mapped = bySource.get(token.toLowerCase());
-    if (mapped?.field_id) out.push(mapped.field_id);
-    else out.push(token); // fallback (keeps old values rather than losing them)
-  });
+      const mapped = bySource.get(token.toLowerCase());
+      if (mapped?.field_id) out.push(mapped.field_id);
+      else out.push(token);
+    });
 
-  // de-dupe
-  return Array.from(new Set(out));
-}
+    return Array.from(new Set(out));
+  }
 
+  const assignedPersonaIds: string[] = selectedTransaction.performed_by_personas ?? [];
+  const assignedPersonaId: string = assignedPersonaIds[0] ?? "";
+  const assignedPersona = (data.personas ?? []).find((p: any) => p.persona_id === assignedPersonaId);
+  const availablePersonaOptions = (data.personas ?? []).map((p: any) => ({
+    value: p.persona_id,
+    label: `${p.display_name} (${p.persona_type})`,
+  }));
+  // ================================================
+  // END - Derived Data
+  // ================================================
 
   if (!selectedTransaction) {
     return <div style={{ color: "#6b7280" }}>No transaction selected.</div>;
   }
 
-  // Personas for Allowed Personas panel
-      const assignedPersonaIds: string[] = selectedTransaction.performed_by_personas ?? [];
-    const assignedPersonaId: string = assignedPersonaIds[0] ?? "";
-    const assignedPersona = (data.personas ?? []).find((p: any) => p.persona_id === assignedPersonaId);
-    const availablePersonaOptions = (data.personas ?? []).map((p: any) => ({
-      value: p.persona_id,
-      label: `${p.display_name} (${p.persona_type})`,
-    }));
-
-
-  // -------------------------
-  // Flow Link helpers
-  // -------------------------
-
+  // ================================================
+  // START - Flow Link Helpers
+  // ================================================
   function addTransactionLink() {
     const target = linkTargetId.trim();
     if (!target || target === selectedTransactionId) return;
@@ -286,11 +299,13 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
       transaction_links: (d.transaction_links ?? []).filter((x: TransactionLink) => x.id !== linkId),
     }));
   }
+  // ================================================
+  // END - Flow Link Helpers
+  // ================================================
 
-  // -------------------------
-  // Steps helpers
-  // -------------------------
-
+  // ================================================
+  // START - Steps Helpers
+  // ================================================
   function normalizeSteps(steps: Step[]) {
     return (steps ?? []).map((s, i) => ({ ...s, id: `S${i + 1}` }));
   }
@@ -313,7 +328,6 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
       steps: normalizeSteps([...(t.steps ?? []), next]),
     }));
 
- 
     setStepDraft({
       type: "navigation",
       action: "",
@@ -322,15 +336,13 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
       required_field_ids: [],
       required_fields_search: "",
     });
-
   }
 
   function openEditStep(step: Step) {
     setEditStepId(step.id);
-  
     const modelRef = step.data_model_ref ?? "";
     const req = (step.required_fields ?? []) as string[];
-  
+
     setStepDraft({
       type: step.type,
       action: step.action ?? "",
@@ -339,24 +351,19 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
       required_field_ids: modelRef ? resolveFieldIds(modelRef, req) : req,
       required_fields_search: "",
     });
-  
+
     setEditStepOpen(true);
   }
-
-
-
-
-
 
   function saveEditStep() {
     if (!editStepId) return;
     const action = stepDraft.action.trim();
     if (!action) return;
-  
+
     updateTransaction((t: any) => {
       const updated = (t.steps ?? []).map((s: Step) => {
         if (s.id !== editStepId) return s;
-  
+
         return {
           ...s,
           type: stepDraft.type,
@@ -366,13 +373,13 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
           required_fields: stepDraft.type === "data" ? (stepDraft.required_field_ids ?? []) : undefined,
         };
       });
-  
+
       return { ...t, steps: normalizeSteps(updated) };
     });
-  
+
     setEditStepOpen(false);
     setEditStepId(null);
-  
+
     setStepDraft({
       type: "navigation",
       action: "",
@@ -383,10 +390,19 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
     });
   }
 
-  // -------------------------
-  // System Actions helpers
-  // -------------------------
+  function deleteStep(stepId: string) {
+    updateTransaction((t: any) => ({
+      ...t,
+      steps: normalizeSteps((t.steps ?? []).filter((s: Step) => s.id !== stepId)),
+    }));
+  }
+  // ================================================
+  // END - Steps Helpers
+  // ================================================
 
+  // ================================================
+  // START - System Actions Helpers
+  // ================================================
   function addSystemActionFromDraft() {
     const target = actionDraft.target.trim();
     const description = actionDraft.description.trim();
@@ -465,11 +481,13 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
       system_actions: (t.system_actions ?? []).filter((a: SystemAction) => a.id !== actionId),
     }));
   }
+  // ================================================
+  // END - System Actions Helpers
+  // ================================================
 
-  // -------------------------
-  // Emitted Events helpers
-  // -------------------------
-
+  // ================================================
+  // START - Emitted Events Helpers
+  // ================================================
   function addEmittedEventFromDraft() {
     const et = eventDraft.event_type.trim();
     const wh = eventDraft.when.trim();
@@ -525,11 +543,13 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
       emitted_events: (t.emitted_events ?? []).filter((_: any, i: number) => i !== idx),
     }));
   }
+  // ================================================
+  // END - Emitted Events Helpers
+  // ================================================
 
-  // -------------------------
-  // Render
-  // -------------------------
-
+  // ================================================
+  // START - Render
+  // ================================================
   return (
     <div style={{ display: "grid", gap: 12 }}>
       <div>
@@ -547,67 +567,83 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
             </div>
 
             <div>
+
+            <div>
               <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>Process Step</div>
 
-              {linkedSteps.length === 0 ? (
-                <div style={{ fontSize: 13, color: "#9ca3af" }}>
-                  Not linked to a Level 4 step yet. Link it from Processes (L4 → Transactions).
-                </div>
-              ) : (
-                <div style={{ display: "grid", gap: 6 }}>
-                  {/* Primary link (clickable) */}
+              {(() => {
+                // Primary: use linkedSteps (from Processes tab linking)
+                if (linkedSteps.length > 0) {
+                  return (
+                    <div style={{ display: "grid", gap: 6 }}>
+                      <Button
+                        variant="secondary"
+                        disabled={!linkedSteps[0]?.l4?.id || !onOpenProcessStep}
+                        onClick={() => {
+                          const l4Id = linkedSteps[0]?.l4?.id;
+                          if (l4Id) onOpenProcessStep?.(l4Id);
+                        }}
+                      >
+                        {linkedSteps[0]?.breadcrumbText ?? "Open Process Step"}
+                      </Button>
 
-
-
-                  <Button
-                    variant="secondary"
-                    disabled={!linkedSteps[0]?.l4?.id || !onOpenProcessStep}
-                    onClick={() => {
-                      const l4Id = linkedSteps[0]?.l4?.id;
-                      if (l4Id) onOpenProcessStep?.(l4Id);
-                    }}
-                  >
-                    {linkedSteps[0]?.breadcrumbText ?? "Open Process Step"}
-                  </Button>
-
-
-
-                  {/* Secondary links (also clickable) */}
-                  {linkedSteps.length > 1 ? (
-                    <div style={{ fontSize: 12, color: "#6b7280" }}>
-                      Also linked to:{" "}
-                      {linkedSteps.slice(1).map((x: any, idx: number) => (
-                        <span key={x?.l4?.id ?? idx}>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const l4Id = x?.l4?.id;
-                              if (l4Id) onOpenProcessStep?.(l4Id);
-                            }}
-                            disabled={!x?.l4?.id || !onOpenProcessStep}
-                            style={{
-                              border: "none",
-                              background: "transparent",
-                              padding: 0,
-                              margin: 0,
-                              cursor: x?.l4?.id && onOpenProcessStep ? "pointer" : "default",
-                              textDecoration: x?.l4?.id && onOpenProcessStep ? "underline" : "none",
-                              color: x?.l4?.id && onOpenProcessStep ? "#111827" : "#6b7280",
-                              fontSize: 12,
-                            }}
-                            title={x?.l4?.id ? "Open this process step" : "No linked L4 step"}
-                          >
-                            {x?.breadcrumbText}
-                          </button>
-                          {idx < linkedSteps.slice(1).length - 1 ? " | " : ""}
-                        </span>
-                      ))}
+                      {linkedSteps.length > 1 && (
+                        <div style={{ fontSize: 12, color: "#6b7280" }}>
+                          Also linked to:{" "}
+                          {linkedSteps.slice(1).map((x: any, idx: number) => (
+                            <span key={x?.l4?.id ?? idx}>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const l4Id = x?.l4?.id;
+                                  if (l4Id) onOpenProcessStep?.(l4Id);
+                                }}
+                                disabled={!x?.l4?.id || !onOpenProcessStep}
+                                style={{
+                                  border: "none",
+                                  background: "transparent",
+                                  padding: 0,
+                                  margin: 0,
+                                  cursor: x?.l4?.id && onOpenProcessStep ? "pointer" : "default",
+                                  textDecoration: x?.l4?.id && onOpenProcessStep ? "underline" : "none",
+                                  color: x?.l4?.id && onOpenProcessStep ? "#111827" : "#6b7280",
+                                  fontSize: 12,
+                                }}
+                                title={x?.l4?.id ? "Open this process step" : "No linked L4 step"}
+                              >
+                                {x?.breadcrumbText}
+                              </button>
+                              {idx < linkedSteps.slice(1).length - 1 ? " | " : ""}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  ) : null}
+                  );
+                }
 
-                </div>
-              )}
+                // Fallback: use process_path stored directly on the transaction (common on new ones)
+                const path = selectedTransaction.process_path;
+                if (Array.isArray(path) && path.length > 0) {
+                  const breadcrumbText = path.join(" > ");
+                  return (
+                    <div style={{ fontSize: 13, color: "#111827", fontWeight: 500 }}>
+                      {breadcrumbText}
+                    </div>
+                  );
+                }
+
+                // Final fallback message
+                return (
+                  <div style={{ fontSize: 13, color: "#9ca3af" }}>
+                    Not linked to a Level 4 step yet. Link it from Processes (L4 → Transactions).
+                  </div>
+                );
+              })()}
             </div>
+            </div>
+
+
 
             <div>
               <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>System context</div>
@@ -625,134 +661,124 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
           </div>
         </Panel>
 
-
         <Panel title="Persona">
-  <div style={{ display: "grid", gap: 12 }}>
-    {(() => {
-      const assignedIds: string[] = selectedTransaction.performed_by_personas ?? [];
-      const assignedId = assignedIds[0] ?? "";
-      const assignedPersona = (data.personas ?? []).find((p: any) => p.persona_id === assignedId);
+          <div style={{ display: "grid", gap: 12 }}>
+            {(() => {
+              const assignedIds: string[] = selectedTransaction.performed_by_personas ?? [];
+              const assignedId = assignedIds[0] ?? "";
+              const assignedPersona = (data.personas ?? []).find((p: any) => p.persona_id === assignedId);
 
-      return (
-        <>
-          {/* Picker (only visible when editing OR when no persona selected) */}
-          {personaEditMode || !assignedPersona ? (
-            <div style={{ display: "grid", gap: 10 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 8, alignItems: "end" }}>
-                <div>
-                  <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>Select persona</div>
-                  <Select
-                    value={personaToAddId}
-                    onChange={setPersonaToAddId}
-                    options={[
-                      { value: "", label: "Select persona..." },
-                      ...(data.personas ?? []).map((p: any) => ({
-                        value: p.persona_id,
-                        label: `${p.display_name} (${p.persona_type})`,
-                      })),
-                    ]}
-                  />
-                </div>
+              return (
+                <>
+                  {personaEditMode || !assignedPersona ? (
+                    <div style={{ display: "grid", gap: 10 }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 8, alignItems: "end" }}>
+                        <div>
+                          <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>Select persona</div>
+                          <Select
+                            value={personaToAddId}
+                            onChange={setPersonaToAddId}
+                            options={[
+                              { value: "", label: "Select persona..." },
+                              ...(data.personas ?? []).map((p: any) => ({
+                                value: p.persona_id,
+                                label: `${p.display_name} (${p.persona_type})`,
+                              })),
+                            ]}
+                          />
+                        </div>
 
-                <div style={{ display: "flex", gap: 8 }}>
-                  <Button
-                    variant="secondary"
-                    disabled={!personaToAddId}
-                    onClick={() => {
-                      const pid = personaToAddId.trim();
-                      if (!pid) return;
+                        <div style={{ display: "flex", gap: 8 }}>
+                          <Button
+                            variant="secondary"
+                            disabled={!personaToAddId}
+                            onClick={() => {
+                              const pid = personaToAddId.trim();
+                              if (!pid) return;
+                              updateTransaction((t: any) => ({
+                                ...t,
+                                performed_by_personas: [pid],
+                              }));
+                              setPersonaToAddId("");
+                              setPersonaEditMode(false);
+                            }}
+                          >
+                            + Add
+                          </Button>
 
-                      // ✅ Enforce ONE persona per transaction
-                      updateTransaction((t: any) => ({
-                        ...t,
-                        performed_by_personas: [pid],
-                      }));
+                          {assignedPersona ? (
+                            <Button
+                              variant="ghost"
+                              onClick={() => {
+                                setPersonaToAddId("");
+                                setPersonaEditMode(false);
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
 
-                      setPersonaToAddId("");
-                      setPersonaEditMode(false);
-                    }}
-                  >
-                    + Add
-                  </Button>
-
-                  {/* Show Cancel only if we were editing an existing persona */}
-                  {assignedPersona ? (
-                    <Button
-                      variant="ghost"
-                      onClick={() => {
-                        setPersonaToAddId("");
-                        setPersonaEditMode(false);
+                  {assignedPersona && !personaEditMode ? (
+                    <div
+                      style={{
+                        border: "1px solid #e5e7eb",
+                        borderRadius: 12,
+                        background: "white",
+                        overflow: "hidden",
                       }}
                     >
-                      Cancel
-                    </Button>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-          ) : null}
-
-          {/* Persona card (only visible once selected and NOT editing) */}
-          {assignedPersona && !personaEditMode ? (
-            <div
-              style={{
-                border: "1px solid #e5e7eb",
-                borderRadius: 12,
-                background: "white",
-                overflow: "hidden",
-              }}
-            >
-              <div style={{ padding: 12, fontWeight: 800, textAlign: "center" }}>
-                {assignedPersona.display_name}
-              </div>
-
-              <div style={{ padding: 12 }}>
-                <div style={{ background: "#f3f4f6", borderRadius: 12, overflow: "hidden", padding: 8 }}>
-                  {(() => {
-                    const av = getAvatarForPersona?.(assignedPersona);
-                    return av?.image_url ? (
-                      <img
-                        src={av.image_url}
-                        alt={assignedPersona.display_name}
-                        style={{ width: "100%", display: "block" }}
-                      />
-                    ) : (
-                      <div style={{ color: "#6b7280", fontSize: 12, padding: 10, textAlign: "center" }}>
-                        No avatar assigned
+                      <div style={{ padding: 12, fontWeight: 800, textAlign: "center" }}>
+                        {assignedPersona.display_name}
                       </div>
-                    );
-                  })()}
-                </div>
-              </div>
 
-              {/* ✅ Edit button directly under the avatar frame */}
-              <div style={{ padding: 12, display: "flex", justifyContent: "flex-end" }}>
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    // Pre-fill picker with current persona, then show it
-                    setPersonaToAddId(assignedPersona.persona_id);
-                    setPersonaEditMode(true);
-                  }}
-                >
-                  Edit
-                </Button>
-              </div>
+                      <div style={{ padding: 12 }}>
+                        <div style={{ background: "#f3f4f6", borderRadius: 12, overflow: "hidden", padding: 8 }}>
+                          {(() => {
+                            const av = getAvatarForPersona?.(assignedPersona);
+                            return av?.image_url ? (
+                              <img
+                                src={av.image_url}
+                                alt={assignedPersona.display_name}
+                                style={{ width: "100%", display: "block" }}
+                              />
+                            ) : (
+                              <div style={{ color: "#6b7280", fontSize: 12, padding: 10, textAlign: "center" }}>
+                                No avatar assigned
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      </div>
 
-              <div style={{ padding: 12, fontSize: 12, color: "#6b7280", textAlign: "center" }}>
-                {assignedPersona.persona_id} • {assignedPersona.persona_type}
-              </div>
-            </div>
-          ) : null}
-        </>
-      );
-    })()}
-  </div>
-</Panel>
+                      <div style={{ padding: 12, display: "flex", justifyContent: "flex-end" }}>
+                        <Button
+                          variant="secondary"
+                          onClick={() => {
+                            setPersonaToAddId(assignedPersona.persona_id);
+                            setPersonaEditMode(true);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      </div>
 
+                      <div style={{ padding: 12, fontSize: 12, color: "#6b7280", textAlign: "center" }}>
+                        {assignedPersona.persona_id} • {assignedPersona.persona_type}
+                      </div>
+                    </div>
+                  ) : null}
+                </>
+              );
+            })()}
+          </div>
+        </Panel>
       </div>
 
-      {/* Flow Links */}
+      {/* Flow Links - FULL GOLD SECTION */}
       <Panel title="Flow Links">
         {(() => {
           const preds = allLinks.filter((l) => l.to === selectedTransactionId);
@@ -947,7 +973,7 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
         })()}
       </Panel>
 
-      {/* Steps */}
+      {/* Steps - FULL GOLD SECTION */}
       <Panel title="Steps">
         <div style={{ display: "grid", gap: 12 }}>
           <div style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 12, background: "white" }}>
@@ -956,17 +982,15 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
             <div style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: 10 }}>
               <div>
                 <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>Type</div>
-                
-                  <Select
-                    value={stepDraft.type}
-                    onChange={(v) => setStepDraft((d) => ({ ...d, type: v as StepType }))}
-                    options={[
-                      { value: "navigation", label: "Navigation" },
-                      { value: "data", label: "Data" },
-                      { value: "decision", label: "Decision" },
-                    ]}
-                  />
-
+                <Select
+                  value={stepDraft.type}
+                  onChange={(v) => setStepDraft((d) => ({ ...d, type: v as StepType }))}
+                  options={[
+                    { value: "navigation", label: "Navigation" },
+                    { value: "data", label: "Data" },
+                    { value: "decision", label: "Decision" },
+                  ]}
+                />
               </div>
 
               <div>
@@ -987,118 +1011,116 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
             </div>
 
             {stepDraft.type === "data" ? (
-  <>
-    <div style={{ height: 10 }} />
+              <>
+                <div style={{ height: 10 }} />
 
-    <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}>
-      <div>
-        <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>Data model</div>
-        <Select
-          value={stepDraft.data_model_ref}
-          onChange={(v) => {
-            // when model changes, clear selections
-            setStepDraft((d) => ({
-              ...d,
-              data_model_ref: v,
-              required_field_ids: [],
-              required_fields_search: "",
-            }));
-          }}
-          options={[{ value: "", label: "Select model..." }, ...dataModelOptions]}
-        />
-      </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}>
+                  <div>
+                    <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>Data model</div>
+                    <Select
+                      value={stepDraft.data_model_ref}
+                      onChange={(v) => {
+                        setStepDraft((d) => ({
+                          ...d,
+                          data_model_ref: v,
+                          required_field_ids: [],
+                          required_fields_search: "",
+                        }));
+                      }}
+                      options={[{ value: "", label: "Select model..." }, ...dataModelOptions]}
+                    />
+                  </div>
 
-      {/* Required fields picklist */}
-      {stepDraft.data_model_ref ? (
-        <div>
-          <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>Required fields</div>
+                  {stepDraft.data_model_ref ? (
+                    <div>
+                      <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>Required fields</div>
 
-          <Input
-            value={stepDraft.required_fields_search}
-            onChange={(v) => setStepDraft((d) => ({ ...d, required_fields_search: v }))}
-            placeholder="Search fields..."
-          />
+                      <Input
+                        value={stepDraft.required_fields_search}
+                        onChange={(v) => setStepDraft((d) => ({ ...d, required_fields_search: v }))}
+                        placeholder="Search fields..."
+                      />
 
-          <div style={{ height: 8 }} />
+                      <div style={{ height: 8 }} />
 
-          {(() => {
-            const model = getModelById(stepDraft.data_model_ref);
-            const fields = model?.fields ?? [];
-            const q = stepDraft.required_fields_search.trim().toLowerCase();
+                      {(() => {
+                        const model = getModelById(stepDraft.data_model_ref);
+                        const fields = model?.fields ?? [];
+                        const q = stepDraft.required_fields_search.trim().toLowerCase();
 
-            const filtered = !q
-              ? fields
-              : fields.filter((f: any) => {
-                  const hay = `${f.field_id} ${f.source_field_code ?? ""} ${f.label ?? ""}`.toLowerCase();
-                  return hay.includes(q);
-                });
+                        const filtered = !q
+                          ? fields
+                          : fields.filter((f: any) => {
+                              const hay = `${f.field_id} ${f.source_field_code ?? ""} ${f.label ?? ""}`.toLowerCase();
+                              return hay.includes(q);
+                            });
 
-            return (
-              <div
-                style={{
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 12,
-                  background: "white",
-                  padding: 10,
-                  maxHeight: 220,
-                  overflow: "auto",
-                  display: "grid",
-                  gap: 8,
-                }}
-              >
-                {filtered.length === 0 ? (
-                  <div style={{ fontSize: 12, color: "#6b7280" }}>No fields found.</div>
-                ) : (
-                  filtered.map((f: any) => {
-                    const checked = (stepDraft.required_field_ids ?? []).includes(f.field_id);
-                    return (
-                      <label
-                        key={f.field_id}
-                        style={{
-                          display: "flex",
-                          gap: 10,
-                          alignItems: "flex-start",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={(e) => {
-                            const next = e.target.checked
-                              ? Array.from(new Set([...(stepDraft.required_field_ids ?? []), f.field_id]))
-                              : (stepDraft.required_field_ids ?? []).filter((id) => id !== f.field_id);
+                        return (
+                          <div
+                            style={{
+                              border: "1px solid #e5e7eb",
+                              borderRadius: 12,
+                              background: "white",
+                              padding: 10,
+                              maxHeight: 220,
+                              overflow: "auto",
+                              display: "grid",
+                              gap: 8,
+                            }}
+                          >
+                            {filtered.length === 0 ? (
+                              <div style={{ fontSize: 12, color: "#6b7280" }}>No fields found.</div>
+                            ) : (
+                              filtered.map((f: any) => {
+                                const checked = (stepDraft.required_field_ids ?? []).includes(f.field_id);
+                                return (
+                                  <label
+                                    key={f.field_id}
+                                    style={{
+                                      display: "flex",
+                                      gap: 10,
+                                      alignItems: "flex-start",
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={checked}
+                                      onChange={(e) => {
+                                        const next = e.target.checked
+                                          ? Array.from(new Set([...(stepDraft.required_field_ids ?? []), f.field_id]))
+                                          : (stepDraft.required_field_ids ?? []).filter((id) => id !== f.field_id);
 
-                            setStepDraft((d) => ({ ...d, required_field_ids: next }));
-                          }}
-                        />
-                        <div style={{ display: "grid", gap: 2 }}>
-                          <div style={{ fontFamily: "monospace", color: "#6b7280", fontSize: 12 }}>{f.field_id}</div>
-                          <div style={{ fontSize: 13 }}>
-                            {f.label ?? ""}{" "}
-                            {f.source_field_code ? (
-                              <span style={{ fontFamily: "monospace", color: "#6b7280" }}>({f.source_field_code})</span>
-                            ) : null}
+                                        setStepDraft((d) => ({ ...d, required_field_ids: next }));
+                                      }}
+                                    />
+                                    <div style={{ display: "grid", gap: 2 }}>
+                                      <div style={{ fontFamily: "monospace", color: "#6b7280", fontSize: 12 }}>{f.field_id}</div>
+                                      <div style={{ fontSize: 13 }}>
+                                        {f.label ?? ""}{" "}
+                                        {f.source_field_code ? (
+                                          <span style={{ fontFamily: "monospace", color: "#6b7280" }}>({f.source_field_code})</span>
+                                        ) : null}
+                                      </div>
+                                    </div>
+                                  </label>
+                                );
+                              })
+                            )}
                           </div>
-                        </div>
-                      </label>
-                    );
-                  })
-                )}
-              </div>
-            );
-          })()}
+                        );
+                      })()}
 
-          <div style={{ marginTop: 8, fontSize: 12, color: "#6b7280" }}>
-            Selected: {(stepDraft.required_field_ids ?? []).length}
-          </div>
-        </div>
-      ) : (
-        <div style={{ fontSize: 12, color: "#9ca3af" }}>Select a data model to choose fields.</div>
-      )}
-    </div>
-  </>
-) : null}
+                      <div style={{ marginTop: 8, fontSize: 12, color: "#6b7280" }}>
+                        Selected: {(stepDraft.required_field_ids ?? []).length}
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ fontSize: 12, color: "#9ca3af" }}>Select a data model to choose fields.</div>
+                  )}
+                </div>
+              </>
+            ) : null}
 
             <div style={{ height: 10 }} />
 
@@ -1212,118 +1234,116 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
                   </div>
 
                   {stepDraft.type === "data" ? (
-  <>
-    <div style={{ height: 10 }} />
+                    <>
+                      <div style={{ height: 10 }} />
 
-    <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}>
-      <div>
-        <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>Data model</div>
-        <Select
-          value={stepDraft.data_model_ref}
-          onChange={(v) => {
-            // when model changes, clear selections
-            setStepDraft((d) => ({
-              ...d,
-              data_model_ref: v,
-              required_field_ids: [],
-              required_fields_search: "",
-            }));
-          }}
-          options={[{ value: "", label: "Select model..." }, ...dataModelOptions]}
-        />
-      </div>
-
-      {/* Required fields picklist */}
-      {stepDraft.data_model_ref ? (
-        <div>
-          <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>Required fields</div>
-
-          <Input
-            value={stepDraft.required_fields_search}
-            onChange={(v) => setStepDraft((d) => ({ ...d, required_fields_search: v }))}
-            placeholder="Search fields..."
-          />
-
-          <div style={{ height: 8 }} />
-
-          {(() => {
-            const model = getModelById(stepDraft.data_model_ref);
-            const fields = model?.fields ?? [];
-            const q = stepDraft.required_fields_search.trim().toLowerCase();
-
-            const filtered = !q
-              ? fields
-              : fields.filter((f: any) => {
-                  const hay = `${f.field_id} ${f.source_field_code ?? ""} ${f.label ?? ""}`.toLowerCase();
-                  return hay.includes(q);
-                });
-
-            return (
-              <div
-                style={{
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 12,
-                  background: "white",
-                  padding: 10,
-                  maxHeight: 220,
-                  overflow: "auto",
-                  display: "grid",
-                  gap: 8,
-                }}
-              >
-                {filtered.length === 0 ? (
-                  <div style={{ fontSize: 12, color: "#6b7280" }}>No fields found.</div>
-                ) : (
-                  filtered.map((f: any) => {
-                    const checked = (stepDraft.required_field_ids ?? []).includes(f.field_id);
-                    return (
-                      <label
-                        key={f.field_id}
-                        style={{
-                          display: "flex",
-                          gap: 10,
-                          alignItems: "flex-start",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={(e) => {
-                            const next = e.target.checked
-                              ? Array.from(new Set([...(stepDraft.required_field_ids ?? []), f.field_id]))
-                              : (stepDraft.required_field_ids ?? []).filter((id) => id !== f.field_id);
-
-                            setStepDraft((d) => ({ ...d, required_field_ids: next }));
-                          }}
-                        />
-                        <div style={{ display: "grid", gap: 2 }}>
-                          <div style={{ fontFamily: "monospace", color: "#6b7280", fontSize: 12 }}>{f.field_id}</div>
-                          <div style={{ fontSize: 13 }}>
-                            {f.label ?? ""}{" "}
-                            {f.source_field_code ? (
-                              <span style={{ fontFamily: "monospace", color: "#6b7280" }}>({f.source_field_code})</span>
-                            ) : null}
-                          </div>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}>
+                        <div>
+                          <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>Data model</div>
+                          <Select
+                            value={stepDraft.data_model_ref}
+                            onChange={(v) => {
+                              setStepDraft((d) => ({
+                                ...d,
+                                data_model_ref: v,
+                                required_field_ids: [],
+                                required_fields_search: "",
+                              }));
+                            }}
+                            options={[{ value: "", label: "Select model..." }, ...dataModelOptions]}
+                          />
                         </div>
-                      </label>
-                    );
-                  })
-                )}
-              </div>
-            );
-          })()}
 
-          <div style={{ marginTop: 8, fontSize: 12, color: "#6b7280" }}>
-            Selected: {(stepDraft.required_field_ids ?? []).length}
-          </div>
-        </div>
-      ) : (
-        <div style={{ fontSize: 12, color: "#9ca3af" }}>Select a data model to choose fields.</div>
-      )}
-    </div>
-  </>
-) : null}
+                        {stepDraft.data_model_ref ? (
+                          <div>
+                            <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>Required fields</div>
+
+                            <Input
+                              value={stepDraft.required_fields_search}
+                              onChange={(v) => setStepDraft((d) => ({ ...d, required_fields_search: v }))}
+                              placeholder="Search fields..."
+                            />
+
+                            <div style={{ height: 8 }} />
+
+                            {(() => {
+                              const model = getModelById(stepDraft.data_model_ref);
+                              const fields = model?.fields ?? [];
+                              const q = stepDraft.required_fields_search.trim().toLowerCase();
+
+                              const filtered = !q
+                                ? fields
+                                : fields.filter((f: any) => {
+                                    const hay = `${f.field_id} ${f.source_field_code ?? ""} ${f.label ?? ""}`.toLowerCase();
+                                    return hay.includes(q);
+                                  });
+
+                              return (
+                                <div
+                                  style={{
+                                    border: "1px solid #e5e7eb",
+                                    borderRadius: 12,
+                                    background: "white",
+                                    padding: 10,
+                                    maxHeight: 220,
+                                    overflow: "auto",
+                                    display: "grid",
+                                    gap: 8,
+                                  }}
+                                >
+                                  {filtered.length === 0 ? (
+                                    <div style={{ fontSize: 12, color: "#6b7280" }}>No fields found.</div>
+                                  ) : (
+                                    filtered.map((f: any) => {
+                                      const checked = (stepDraft.required_field_ids ?? []).includes(f.field_id);
+                                      return (
+                                        <label
+                                          key={f.field_id}
+                                          style={{
+                                            display: "flex",
+                                            gap: 10,
+                                            alignItems: "flex-start",
+                                            cursor: "pointer",
+                                          }}
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            checked={checked}
+                                            onChange={(e) => {
+                                              const next = e.target.checked
+                                                ? Array.from(new Set([...(stepDraft.required_field_ids ?? []), f.field_id]))
+                                                : (stepDraft.required_field_ids ?? []).filter((id) => id !== f.field_id);
+
+                                              setStepDraft((d) => ({ ...d, required_field_ids: next }));
+                                            }}
+                                          />
+                                          <div style={{ display: "grid", gap: 2 }}>
+                                            <div style={{ fontFamily: "monospace", color: "#6b7280", fontSize: 12 }}>{f.field_id}</div>
+                                            <div style={{ fontSize: 13 }}>
+                                              {f.label ?? ""}{" "}
+                                              {f.source_field_code ? (
+                                                <span style={{ fontFamily: "monospace", color: "#6b7280" }}>({f.source_field_code})</span>
+                                              ) : null}
+                                            </div>
+                                          </div>
+                                        </label>
+                                      );
+                                    })
+                                  )}
+                                </div>
+                              );
+                            })()}
+
+                            <div style={{ marginTop: 8, fontSize: 12, color: "#6b7280" }}>
+                              Selected: {(stepDraft.required_field_ids ?? []).length}
+                            </div>
+                          </div>
+                        ) : (
+                          <div style={{ fontSize: 12, color: "#9ca3af" }}>Select a data model to choose fields.</div>
+                        )}
+                      </div>
+                    </>
+                  ) : null}
 
                   <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 8 }}>
                     <Button variant="secondary" onClick={() => setEditStepOpen(false)}>
@@ -1340,7 +1360,7 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
         </div>
       </Panel>
 
-      {/* System Actions */}
+      {/* System Actions - FULL GOLD SECTION */}
       <Panel title="System Actions">
         <div style={{ display: "grid", gap: 12 }}>
           <div style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 12, background: "white" }}>
@@ -1545,7 +1565,7 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
         </div>
       </Panel>
 
-      {/* Emitted Events */}
+      {/* Emitted Events - FULL GOLD SECTION */}
       <Panel title="Emitted Events">
         <div style={{ display: "grid", gap: 12 }}>
           <div style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 12, background: "white" }}>
@@ -1703,6 +1723,20 @@ function resolveFieldIds(model_id: string, tokens: string[]) {
           ) : null}
         </div>
       </Panel>
+
+{/* Back button */}
+<Button
+        variant="secondary"
+        onClick={() => {
+          setSelectedTransactionId("");
+          onOpenTransaction?.("");   // tells TransactionsTab to switch back to list view
+        }}
+      >
+        ← Back to Transactions List
+      </Button>
     </div>
   );
 }
+// ================================================
+// END - Render
+// ================================================

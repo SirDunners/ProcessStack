@@ -5,12 +5,14 @@ import React, { useMemo, useState, useEffect } from "react";
 // - L5 transaction linking (existing)
 // - Phase 2A (Step 1): Create new transaction + link to selected L4 step
 
+// ================================================
+// START - Type Definitions
+// ================================================
 export type ProcessesTabProps = {
   data: any;
   setData: React.Dispatch<React.SetStateAction<any>>;
   deepLinkL4Id?: string;
   clearDeepLinkL4Id?: () => void;
-
 
   // Needed for deep-linking from Processes -> Transactions
   setTab: (tab: any) => void;
@@ -57,7 +59,13 @@ type Transaction = {
   emitted_events: any[];
   system_actions: any[];
 };
+// ================================================
+// END - Type Definitions
+// ================================================
 
+// ================================================
+// START - Static Data
+// ================================================
 const L2_PROCESS_AREAS = [
   {
     id: "L2-HR",
@@ -109,17 +117,20 @@ const DEFAULT_L4_PROCESS_NODES: ProcessNode[] = [
   { id: "L4-HR-ONB-ACC", level: 4, parentId: "L3-HR-ONB", title: "Provision Accounts", description: "Trigger joiner tasks for identity, email, tools, and access allocation." },
   { id: "L4-HR-ONB-DAY", level: 4, parentId: "L3-HR-ONB", title: "Day-One Readiness", description: "Confirm equipment, access, welcome comms and induction schedule are ready." },
 
-  { id: "L4-HR-POS-CRT", level: 4, parentId: "L3-HR-POS", title: "Create Position", description: "Create a new position under an org structure with effective dating.", transactionIds: ["TRX-HR-POS-001"] },
+  // Legacy "Create Position" entry — removed the old transactionIds so it no longer shows the rogue transaction
+  { id: "L4-HR-POS-CRT", level: 4, parentId: "L3-HR-POS", title: "Create Position", description: "Create a new position under an org structure with effective dating." },
   { id: "L4-HR-POS-CHG", level: 4, parentId: "L3-HR-POS", title: "Change Position", description: "Change job attributes, department, cost centre or reporting relationships." },
 ];
-
-function makeTrxId() {
-  return `TRX-${Math.random().toString(16).slice(2, 8).toUpperCase()}-${Date.now().toString(16).toUpperCase()}`;
-}
+// ================================================
+// END - Static Data
+// ================================================
 
 export default function ProcessesTab(props: ProcessesTabProps) {
   const { data, setData, setTab, setSelectedTransactionId, setTransactionsInitialView, deepLinkL4Id, clearDeepLinkL4Id, Panel, Button, Select, Input, Textarea, ProcessesL2Accordion } = props;
 
+  // ================================================
+  // START - Local State
+  // ================================================
   const [processesView, setProcessesView] = useState<"l2" | "l2Detail" | "l3Detail">("l2");
   const [selectedL2Id, setSelectedL2Id] = useState<string | null>(null);
   const [selectedL3Id, setSelectedL3Id] = useState<string | null>(null);
@@ -128,7 +139,6 @@ export default function ProcessesTab(props: ProcessesTabProps) {
 
   const [linkTrxToL4Id, setLinkTrxToL4Id] = useState<string>("");
 
-  // NEW (Step 1): create + link modal state
   const [createOpen, setCreateOpen] = useState(false);
   const [createDraft, setCreateDraft] = useState<{ name: string; system: string; personaId: string; intent: string }>({
     name: "",
@@ -136,14 +146,25 @@ export default function ProcessesTab(props: ProcessesTabProps) {
     personaId: "",
     intent: "",
   });
+  // ================================================
+  // END - Local State
+  // ================================================
 
-  // ensure l4_process_nodes exists in persisted data
+  // ================================================
+  // START - Data Initialization
+  // ================================================
   useEffect(() => {
     if (Array.isArray((data as any)?.l4_process_nodes)) return;
     setData((d: any) => ({ ...d, l4_process_nodes: DEFAULT_L4_PROCESS_NODES }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // ================================================
+  // END - Data Initialization
+  // ================================================
 
+  // ================================================
+  // START - Computed Data
+  // ================================================
   const l4All: ProcessNode[] = useMemo(() => ((data as any)?.l4_process_nodes ?? DEFAULT_L4_PROCESS_NODES) as ProcessNode[], [data]);
 
   const personaOptions = useMemo(() => {
@@ -159,7 +180,52 @@ export default function ProcessesTab(props: ProcessesTabProps) {
     (data.personas ?? []).forEach((p: any) => m.set(p.persona_id, p.display_name));
     return m;
   }, [data.personas]);
+
+  const trxOptions = useMemo(() => {
+    return (data.transactions ?? []).map((t: any) => ({ value: t.transaction_id, label: t.name }));
+  }, [data.transactions]);
+
+  const l3Nodes = useMemo(() => L3_PROCESS_NODES.filter((n) => n.level === 3 && n.parentId === selectedL2Id), [selectedL2Id]);
+
+  const l4Nodes = useMemo(() => (selectedL3Id ? l4All.filter((n) => n.level === 4 && n.parentId === selectedL3Id) : []), [l4All, selectedL3Id]);
+
+  const selectedL4 = useMemo(() => (selectedL4Id ? l4All.find((x) => x.id === selectedL4Id) : undefined), [l4All, selectedL4Id]);
+
+  const linkedTransactions = useMemo(() => {
+    const trxIds = selectedL4?.transactionIds ?? [];
+    const tx = (data.transactions ?? []) as Transaction[];
+    return tx.filter((t) => trxIds.includes(t.transaction_id));
+  }, [data.transactions, selectedL4]);
+  // ================================================
+  // END - Computed Data
+  // ================================================
+
+  // ================================================
+  // START - useEffect Hooks
+  // ================================================
+  useEffect(() => {
+    if (!deepLinkL4Id) return;
   
+    const l4 = l4All.find((n) => n.id === deepLinkL4Id);
+    if (!l4) return;
+  
+    const l3 = L3_PROCESS_NODES.find((n) => n.id === l4.parentId);
+    const l2Id = l3?.parentId ?? null;
+  
+    setSelectedL2Id(l2Id);
+    setSelectedL3Id(l3?.id ?? null);
+    setSelectedL4Id(l4.id);
+    setProcessesView("l3Detail");
+  
+    clearDeepLinkL4Id?.();
+  }, [deepLinkL4Id, l4All, clearDeepLinkL4Id]);
+  // ================================================
+  // END - useEffect Hooks
+  // ================================================
+
+  // ================================================
+  // START - Helper Functions
+  // ================================================
   function personaSuffixForTransaction(trx: any) {
     const ids: string[] = trx?.performed_by_personas ?? [];
     if (ids.length === 1) {
@@ -170,10 +236,6 @@ export default function ProcessesTab(props: ProcessesTabProps) {
     return "";
   }
 
-  const trxOptions = useMemo(() => {
-    return (data.transactions ?? []).map((t: any) => ({ value: t.transaction_id, label: t.name }));
-  }, [data.transactions]);
-
   function linkTransactionToSelectedL4(trxId: string) {
     if (!selectedL4Id) return;
     const cleanId = (trxId || "").trim();
@@ -181,13 +243,27 @@ export default function ProcessesTab(props: ProcessesTabProps) {
 
     setData((d: any) => {
       const nodes: ProcessNode[] = (d.l4_process_nodes ?? DEFAULT_L4_PROCESS_NODES) as ProcessNode[];
-      const next = nodes.map((n) => {
+      const l4 = nodes.find((n) => n.id === selectedL4Id);
+      if (!l4) return d;
+
+      const l3 = L3_PROCESS_NODES.find((n) => n.id === l4.parentId);
+      const l2 = L2_PROCESS_AREAS.find((area) => area.id === l3?.parentId);
+
+      const processPath = [l2?.title || "", l3?.title || "", l4.title || ""].filter(Boolean);
+
+      const updatedTransactions = (d.transactions ?? []).map((t: any) => {
+        if (t.transaction_id === cleanId) return { ...t, process_path: processPath };
+        return t;
+      });
+
+      const nextNodes = nodes.map((n) => {
         if (n.id !== selectedL4Id) return n;
         const existing = n.transactionIds ?? [];
         if (existing.includes(cleanId)) return n;
         return { ...n, transactionIds: [...existing, cleanId] };
       });
-      return { ...d, l4_process_nodes: next };
+
+      return { ...d, transactions: updatedTransactions, l4_process_nodes: nextNodes };
     });
 
     setLinkTrxToL4Id("");
@@ -222,10 +298,16 @@ export default function ProcessesTab(props: ProcessesTabProps) {
 
     const newId = makeTrxId();
 
+    const l4 = (data.l4_process_nodes ?? DEFAULT_L4_PROCESS_NODES).find((n: any) => n.id === selectedL4Id);
+    const l3 = L3_PROCESS_NODES.find((n) => n.id === l4?.parentId);
+    const l2 = L2_PROCESS_AREAS.find((area) => area.id === l3?.parentId);
+
+    const processPath = [l2?.title || "", l3?.title || "", l4?.title || ""].filter(Boolean);
+
     const trx: Transaction = {
       transaction_id: newId,
       name,
-      process_path: [],
+      process_path: processPath,
       system_context: createDraft.system ? [createDraft.system] : [],
       performed_by_personas: createDraft.personaId ? [createDraft.personaId] : [],
       intent: createDraft.intent.trim(),
@@ -254,47 +336,17 @@ export default function ProcessesTab(props: ProcessesTabProps) {
 
     setCreateOpen(false);
 
-    // Deep-link to the Transaction detail editor
     setSelectedTransactionId(newId);
     setTransactionsInitialView("detail");
     setTab("transactions");
   }
-
-  const l3Nodes = useMemo(() => L3_PROCESS_NODES.filter((n) => n.level === 3 && n.parentId === selectedL2Id), [selectedL2Id]);
-  const l4Nodes = useMemo(() => (selectedL3Id ? l4All.filter((n) => n.level === 4 && n.parentId === selectedL3Id) : []), [l4All, selectedL3Id]);
-  const selectedL4 = useMemo(() => (selectedL4Id ? l4All.find((x) => x.id === selectedL4Id) : undefined), [l4All, selectedL4Id]);
-
-  const linkedTransactions = useMemo(() => {
-    const trxIds = selectedL4?.transactionIds ?? [];
-    const tx = (data.transactions ?? []) as Transaction[];
-    return tx.filter((t) => trxIds.includes(t.transaction_id));
-  }, [data.transactions, selectedL4]);
-
-  useEffect(() => {
-    if (!deepLinkL4Id) return;
-  
-    // Find the L4 node (from persisted nodes)
-    const l4 = l4All.find((n) => n.id === deepLinkL4Id);
-    if (!l4) return;
-  
-    // Find parent L3 and L2 (from our static arrays)
-    const l3 = L3_PROCESS_NODES.find((n) => n.id === l4.parentId);
-    const l2Id = l3?.parentId ?? null;
-  
-    // Jump UI to the correct place
-    setSelectedL2Id(l2Id);
-    setSelectedL3Id(l3?.id ?? null);
-    setSelectedL4Id(l4.id);
-    setProcessesView("l3Detail");
-  
-    // Clear after applying so it doesn't keep re-triggering
-    clearDeepLinkL4Id?.();
-  }, [deepLinkL4Id, l4All, clearDeepLinkL4Id]);
-
-
+  // ================================================
+  // END - Helper Functions
+  // ================================================
 
   return (
     <Panel title="Processes">
+      {/* ... the rest of your return JSX is unchanged ... */}
       {processesView === "l2" ? (
         <div style={{ display: "grid", gap: 14 }}>
           <div style={{ fontSize: 13, color: "#6b7280" }}>Level 2 process areas — hover to explore, click to open.</div>
@@ -309,6 +361,7 @@ export default function ProcessesTab(props: ProcessesTabProps) {
           />
         </div>
       ) : processesView === "l2Detail" ? (
+        /* ... your existing l2Detail JSX (unchanged) ... */
         <div style={{ display: "grid", gap: 14 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
             <Button
@@ -356,6 +409,7 @@ export default function ProcessesTab(props: ProcessesTabProps) {
           )}
         </div>
       ) : (
+        /* ... your existing l3Detail JSX (unchanged) ... */
         <div style={{ display: "grid", gap: 14 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
             <Button
@@ -396,7 +450,6 @@ export default function ProcessesTab(props: ProcessesTabProps) {
             <div style={{ fontSize: 12, color: "#6b7280" }}>Select an L4 step to see linked transactions (L5).</div>
           ) : (
             <Panel title="Transactions (L5)">
-              {/* Step 1: Create + Link */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end", gap: 12, marginBottom: 10, flexWrap: "wrap" }}>
                 <div style={{ fontSize: 12, color: "#6b7280" }}>Link an existing transaction to this L4 step (or create a new one):</div>
                 <Button variant="secondary" onClick={openCreateAndLink}>
@@ -404,7 +457,6 @@ export default function ProcessesTab(props: ProcessesTabProps) {
                 </Button>
               </div>
 
-              {/* Existing link control */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 8, alignItems: "end", marginBottom: 12 }}>
                 <div>
                   <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 6 }}>Transaction</div>
@@ -415,34 +467,13 @@ export default function ProcessesTab(props: ProcessesTabProps) {
                 </Button>
               </div>
 
-              {/* Create modal */}
               {createOpen ? (
-                <div
-                  style={{
-                    position: "fixed",
-                    inset: 0,
-                    background: "rgba(0,0,0,0.35)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 16,
-                    zIndex: 20000,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "min(760px, 96vw)",
-                      background: "white",
-                      borderRadius: 14,
-                      border: "1px solid #e5e7eb",
-                      padding: 16,
-                    }}
-                  >
+                /* ... your existing create modal JSX (unchanged) ... */
+                <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, zIndex: 20000 }}>
+                  <div style={{ width: "min(760px, 96vw)", background: "white", borderRadius: 14, border: "1px solid #e5e7eb", padding: 16 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
                       <div style={{ fontWeight: 800, fontSize: 18 }}>New Transaction (auto-linked to this L4 step)</div>
-                      <Button variant="secondary" onClick={() => setCreateOpen(false)}>
-                        Close
-                      </Button>
+                      <Button variant="secondary" onClick={() => setCreateOpen(false)}>Close</Button>
                     </div>
 
                     <div style={{ height: 12 }} />
@@ -469,12 +500,8 @@ export default function ProcessesTab(props: ProcessesTabProps) {
                       </div>
 
                       <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-                        <Button variant="secondary" onClick={() => setCreateOpen(false)}>
-                          Cancel
-                        </Button>
-                        <Button onClick={createAndLinkTransaction} disabled={!createDraft.name.trim()}>
-                          Create & Open
-                        </Button>
+                        <Button variant="secondary" onClick={() => setCreateOpen(false)}>Cancel</Button>
+                        <Button onClick={createAndLinkTransaction} disabled={!createDraft.name.trim()}>Create & Open</Button>
                       </div>
                     </div>
                   </div>

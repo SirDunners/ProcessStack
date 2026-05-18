@@ -9,6 +9,9 @@ import DataFieldDetail from "./DataFieldDetail";
  * - Owns: navigation state + create-model modal + persistence mutations
  */
 
+// ================================================
+// START - Type Definitions
+// ================================================
 export type DataModelsTabProps = {
   data: any;
   setData: React.Dispatch<React.SetStateAction<any>>;
@@ -58,7 +61,13 @@ type DataModel = {
   description?: string;
   fields: DataField[];
 };
+// ================================================
+// END - Type Definitions
+// ================================================
 
+// ================================================
+// START - Helper Functions
+// ================================================
 function normalizeSystem(s: string) {
   return (s || "").trim();
 }
@@ -90,10 +99,16 @@ function nextFieldId(model_id: string, fields: any[]) {
   const next = maxN + 1;
   return `${model_id}.${String(next).padStart(3, "0")}`;
 }
+// ================================================
+// END - Helper Functions
+// ================================================
 
 export default function DataModelsTab(props: DataModelsTabProps) {
   const { data, setData, Panel, Button, Input, Textarea, Select } = props;
 
+  // ================================================
+  // START - Computed Data
+  // ================================================
   const models: DataModel[] = useMemo(() => {
     const arr = (data as any)?.data_models;
     return Array.isArray(arr) ? (arr as DataModel[]) : [];
@@ -106,10 +121,14 @@ export default function DataModelsTab(props: DataModelsTabProps) {
     const uniq = Array.from(new Set(names)).sort((a, b) => a.localeCompare(b));
     return uniq.map((name) => ({ value: name, label: name }));
   }, [data?.systems]);
+  // ================================================
+  // END - Computed Data
+  // ================================================
 
-  // -------------------------
+  // ================================================
+  // START - Local State
+  // ================================================
   // Navigation state
-  // -------------------------
   const [view, setView] = useState<"list" | "model" | "field">("list");
   const [selectedModelId, setSelectedModelId] = useState<string>("");
   const [selectedFieldId, setSelectedFieldId] = useState<string>("");
@@ -118,9 +137,7 @@ export default function DataModelsTab(props: DataModelsTabProps) {
   const [search, setSearch] = useState("");
   const [systemFilter, setSystemFilter] = useState<string>("");
 
-  // -------------------------
   // Create model modal (GLOBAL)
-  // -------------------------
   const [createOpen, setCreateOpen] = useState(false);
   const [createDraft, setCreateDraft] = useState<{ system: string; entity: string; version: string; status: ModelStatus; description: string }>({
     system: "",
@@ -129,7 +146,13 @@ export default function DataModelsTab(props: DataModelsTabProps) {
     status: "Draft",
     description: "",
   });
+  // ================================================
+  // END - Local State
+  // ================================================
 
+  // ================================================
+  // START - Options
+  // ================================================
   const statusOptions = useMemo(
     () => [
       { value: "Draft", label: "Draft" },
@@ -168,10 +191,13 @@ export default function DataModelsTab(props: DataModelsTabProps) {
     ],
     []
   );
+  // ================================================
+  // END - Options
+  // ================================================
 
-  // -------------------------
-  // Derived selection
-  // -------------------------
+  // ================================================
+  // START - Derived Selection
+  // ================================================
   const selectedModel: DataModel | undefined = useMemo(() => {
     return models.find((m) => m.model_id === selectedModelId) ?? undefined;
   }, [models, selectedModelId]);
@@ -180,7 +206,13 @@ export default function DataModelsTab(props: DataModelsTabProps) {
     if (!selectedModel) return undefined;
     return (selectedModel.fields ?? []).find((f: any) => f.field_id === selectedFieldId);
   }, [selectedModel, selectedFieldId]);
+  // ================================================
+  // END - Derived Selection
+  // ================================================
 
+  // ================================================
+  // START - useEffect Hooks
+  // ================================================
   // Keep selection valid
   useEffect(() => {
     if (view === "list") return;
@@ -193,10 +225,13 @@ export default function DataModelsTab(props: DataModelsTabProps) {
       setView("list");
     }
   }, [models, selectedModelId, view]);
+  // ================================================
+  // END - useEffect Hooks
+  // ================================================
 
-  // -------------------------
-  // CRUD helpers
-  // -------------------------
+  // ================================================
+  // START - CRUD Helpers
+  // ================================================
   function openCreateModel() {
     setCreateDraft({ system: "", entity: "", version: "1.0", status: "Draft", description: "" });
     setCreateOpen(true);
@@ -284,10 +319,13 @@ export default function DataModelsTab(props: DataModelsTabProps) {
 
     return out;
   }
+  // ================================================
+  // END - CRUD Helpers
+  // ================================================
 
-  // -------------------------
-  // Render
-  // -------------------------
+  // ================================================
+  // START - Render
+  // ================================================
   return (
     <Panel title="Data Models">
       {view === "list" ? (
@@ -470,4 +508,7 @@ export default function DataModelsTab(props: DataModelsTabProps) {
       ) : null}
     </Panel>
   );
+  // ================================================
+  // END - Render
+  // ================================================
 }

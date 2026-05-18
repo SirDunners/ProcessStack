@@ -4,10 +4,19 @@ import { IoIosSearch } from "react-icons/io";
 import { RxDashboard } from "react-icons/rx";
 import { GoPerson } from "react-icons/go";
 import { IoNewspaperOutline, IoSettingsOutline } from "react-icons/io5";
-import { MdAccountTree, MdOutlineArchitecture,MdStorage } from "react-icons/md";
+import { MdAccountTree, MdOutlineArchitecture, MdStorage } from "react-icons/md";
 
-type TabKey = "home" | "processes" | "architecture" | "transactions" | "personas" | "run";
+// ================================================
+// START - Type Definitions
+// ================================================
+type TabKey = "home" | "processes" | "architecture" | "dataModels" | "transactions" | "personas" | "run";
+// ================================================
+// END - Type Definitions
+// ================================================
 
+// ================================================
+// START - Component Props
+// ================================================
 export default function ResponsiveSidebar({
   tab,
   setTab,
@@ -15,6 +24,7 @@ export default function ResponsiveSidebar({
   onResetData,
   logoSrc,
   onCollapseChange,
+  clearSelectedTransaction,   // ← NEW: Fix for landing on list view
 }: {
   tab: TabKey;
   setTab: (t: TabKey) => void;
@@ -22,10 +32,17 @@ export default function ResponsiveSidebar({
   onResetData: () => void;
   logoSrc?: string;
   onCollapseChange?: (collapsed: boolean) => void;
+  clearSelectedTransaction?: () => void;   // Clears selectedTransactionId when clicking Transactions
 }) {
-  const [isExpanded, setIsExpanded] = useState(true);
-  
+// ================================================
+// END - Component Props
+// ================================================
 
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  // ================================================
+  // START - Menu Data
+  // ================================================
   const menu = useMemo(
     () => [
       { key: "home" as const, label: "Home", icon: <RxDashboard className="text-[1.3rem]" /> },
@@ -39,8 +56,13 @@ export default function ResponsiveSidebar({
     ],
     []
   );
+  // ================================================
+  // END - Menu Data
+  // ================================================
 
-  // Same logo rendering for expanded + collapsed (cropped/zoomed to remove PNG whitespace)
+  // ================================================
+  // START - LogoBadge Sub-component
+  // ================================================
   const LogoBadge = () => (
     <div
       className="h-9 w-9 rounded-md bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden cursor-pointer"
@@ -54,6 +76,9 @@ export default function ResponsiveSidebar({
       )}
     </div>
   );
+  // ================================================
+  // END - LogoBadge Sub-component
+  // ================================================
 
   return (
     <aside
@@ -171,7 +196,14 @@ export default function ResponsiveSidebar({
             return (
               <div
                 key={item.key}
-                onClick={() => setTab(item.key)}
+                onClick={() => {
+                  setTab(item.key);
+                  // FIX: When clicking Transactions, clear any previously selected transaction
+                  // so we always land on the list view instead of detail
+                  if (item.key === "transactions" && clearSelectedTransaction) {
+                    clearSelectedTransaction();
+                  }
+                }}
                 className={[
                   "flex items-center w-full p-[8px] rounded-md cursor-pointer transition-all duration-200 relative group",
                   isExpanded ? "justify-between" : "justify-center",
