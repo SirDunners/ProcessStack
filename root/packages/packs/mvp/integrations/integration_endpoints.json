@@ -1,0 +1,26 @@
+[
+    {
+      "integration_id": "INT_JOB_REQUISITION_SYNC",
+      "endpoint_id": "EP_AVATURE_JOB_POST",
+      "type": "REST",
+      "url": "https://api.avature.net/jobs",
+      "method": "POST",
+      "auth": "oauth2"
+    },
+    {
+      "integration_id": "INT_CANDIDATE_STATUS_SYNC",
+      "endpoint_id": "EP_WORKDAY_CANDIDATE_UPDATE",
+      "type": "REST",
+      "url": "https://api.workday.com/candidates/status",
+      "method": "PATCH",
+      "auth": "oauth2"
+    },
+    {
+      "integration_id": "INT_ACCESS_PROVISIONING",
+      "endpoint_id": "EP_SN_ACCESS_EVENT",
+      "type": "EVENT",
+      "topic": "workday.new_hire.created",
+      "auth": "service_account"
+    }
+  ]
+  

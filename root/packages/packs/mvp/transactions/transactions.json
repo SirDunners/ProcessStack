@@ -1,0 +1,66 @@
+[
+    {
+      "transaction_id": "TRX_CREATE_REQ_MANAGER",
+      "l4_id": "L4_CREATE_REQ",
+      "name": "Create Requisition (Manager)",
+      "persona_id": "P_MANAGER",
+      "system_id": "SYS_WORKDAY",
+      "description": "Manager creates a new job requisition with basic job details and organisational information.",
+      "status": "active"
+    },
+    {
+      "transaction_id": "TRX_CREATE_REQ_RECRUITER",
+      "l4_id": "L4_CREATE_REQ",
+      "name": "Create Requisition (Recruiter)",
+      "persona_id": "P_RECRUITER",
+      "system_id": "SYS_AVATURE",
+      "description": "Recruiter creates or refines a job requisition with additional recruiting-specific details.",
+      "status": "active"
+    },
+    {
+      "transaction_id": "TRX_POST_JOB",
+      "l4_id": "L4_POST_JOB",
+      "name": "Post Job",
+      "persona_id": "P_RECRUITER",
+      "system_id": "SYS_AVATURE",
+      "description": "Recruiter posts the approved requisition to internal and external job boards.",
+      "status": "active"
+    },
+    {
+      "transaction_id": "TRX_SCREEN_CANDIDATES",
+      "l4_id": "L4_SCREEN_CANDIDATES",
+      "name": "Screen Candidates",
+      "persona_id": "P_RECRUITER",
+      "system_id": "SYS_AVATURE",
+      "description": "Recruiter reviews applicants, shortlists candidates, and updates their status.",
+      "status": "active"
+    },
+    {
+      "transaction_id": "TRX_INTERVIEW_MANAGER",
+      "l4_id": "L4_INTERVIEW",
+      "name": "Conduct Interview (Manager)",
+      "persona_id": "P_MANAGER",
+      "system_id": "SYS_AVATURE",
+      "description": "Manager conducts interviews and provides structured feedback.",
+      "status": "active"
+    },
+    {
+      "transaction_id": "TRX_INTERVIEW_RECRUITER",
+      "l4_id": "L4_INTERVIEW",
+      "name": "Conduct Interview (Recruiter)",
+      "persona_id": "P_RECRUITER",
+      "system_id": "SYS_AVATURE",
+      "description": "Recruiter coordinates interviews, captures notes, and manages scheduling.",
+      "status": "active"
+    },
+    {
+      "transaction_id": "TRX_CREATE_OFFER",
+      "l4_id": "L4_OFFER",
+      "name": "Create Offer",
+      "persona_id": "P_HR_ADMIN",
+      "system_id": "SYS_WORKDAY",
+      "description": "HR Admin prepares and issues an offer to the selected candidate.",
+      "status": "active"
+    }
+  ]
+  

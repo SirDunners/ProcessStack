@@ -1,0 +1,22 @@
+[
+    {
+      "integration_id": "INT_JOB_REQUISITION_SYNC",
+      "source_data_model_id": "DM_WORKDAY_JOB_REQUISITION",
+      "target_data_model_id": "DM_AVATURE_JOB",
+      "mappings": [
+        { "source_field": "job_title", "target_field": "job_title" },
+        { "source_field": "job_description", "target_field": "job_description" },
+        { "source_field": "org_unit", "target_field": "job_family" }
+      ]
+    },
+    {
+      "integration_id": "INT_CANDIDATE_STATUS_SYNC",
+      "source_data_model_id": "DM_AVATURE_CANDIDATE",
+      "target_data_model_id": "DM_WORKDAY_JOB_REQUISITION",
+      "mappings": [
+        { "source_field": "screening_status", "target_field": "screening_status" },
+        { "source_field": "candidate_name", "target_field": "candidate_name" }
+      ]
+    }
+  ]
+  

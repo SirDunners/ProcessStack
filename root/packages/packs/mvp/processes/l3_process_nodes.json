@@ -1,0 +1,21 @@
+[
+    {
+      "l3_id": "L3_RECRUITING",
+      "l2_id": "L2_HR",
+      "name": "Recruiting",
+      "description": "Processes related to attracting, selecting, and hiring talent."
+    },
+    {
+      "l3_id": "L3_ONBOARDING",
+      "l2_id": "L2_HR",
+      "name": "Onboarding",
+      "description": "Processes for preparing and integrating new hires."
+    },
+    {
+      "l3_id": "L3_CORE_HR",
+      "l2_id": "L2_HR",
+      "name": "Core HR",
+      "description": "Employee lifecycle, job changes, and organisational management."
+    }
+  ]
+  

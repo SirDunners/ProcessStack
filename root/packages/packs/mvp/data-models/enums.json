@@ -1,0 +1,47 @@
+[
+    {
+      "enum_id": "ENUM_SCREENING_STATUS",
+      "name": "Screening Status",
+      "description": "Possible statuses for candidate screening in the recruiting process.",
+      "values": [
+        { "value_id": "NEW", "label": "New" },
+        { "value_id": "IN_REVIEW", "label": "In Review" },
+        { "value_id": "SHORTLISTED", "label": "Shortlisted" },
+        { "value_id": "REJECTED", "label": "Rejected" },
+        { "value_id": "WITHDRAWN", "label": "Withdrawn" }
+      ]
+    },
+    {
+      "enum_id": "ENUM_CURRENCY",
+      "name": "Currency",
+      "description": "Supported currencies for offer packages.",
+      "values": [
+        { "value_id": "GBP", "label": "British Pound (GBP)" },
+        { "value_id": "USD", "label": "US Dollar (USD)" },
+        { "value_id": "EUR", "label": "Euro (EUR)" }
+      ]
+    },
+    {
+      "enum_id": "ENUM_JOB_FAMILY",
+      "name": "Job Family",
+      "description": "High-level job families used for requisition classification.",
+      "values": [
+        { "value_id": "TECH", "label": "Technology" },
+        { "value_id": "FINANCE", "label": "Finance" },
+        { "value_id": "HR", "label": "Human Resources" },
+        { "value_id": "OPS", "label": "Operations" }
+      ]
+    },
+    {
+      "enum_id": "ENUM_JOB_BOARD",
+      "name": "Job Boards",
+      "description": "Supported job boards for posting vacancies.",
+      "values": [
+        { "value_id": "INTERNAL", "label": "Internal Careers Site" },
+        { "value_id": "LINKEDIN", "label": "LinkedIn" },
+        { "value_id": "INDEED", "label": "Indeed" },
+        { "value_id": "GLASSDOOR", "label": "Glassdoor" }
+      ]
+    }
+  ]
+  

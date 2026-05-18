@@ -1,0 +1,57 @@
+[
+    {
+      "system_id": "SYS_WORKDAY",
+      "name": "Workday",
+      "vendor": "Workday Inc.",
+      "category": "HCM",
+      "description": "Cloud-based human capital management system used for core HR, recruiting, onboarding, and talent processes.",
+      "modules": ["Core HR", "Recruiting", "Compensation", "Talent", "Onboarding"],
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_SF",
+      "name": "SAP SuccessFactors",
+      "vendor": "SAP",
+      "category": "HCM",
+      "description": "Cloud HCM suite used for recruiting, performance, learning, and employee central.",
+      "modules": ["Employee Central", "Recruiting", "Performance", "Learning"],
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_AVATURE",
+      "name": "Avature",
+      "vendor": "Avature",
+      "category": "ATS",
+      "description": "Advanced talent acquisition and CRM platform used for recruiting workflows, candidate management, and job posting.",
+      "modules": ["ATS", "CRM", "Job Posting", "Interview Management"],
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_SERVICENOW",
+      "name": "ServiceNow",
+      "vendor": "ServiceNow",
+      "category": "ITSM",
+      "description": "Enterprise workflow and IT service management platform used for access provisioning, case management, and service requests.",
+      "modules": ["ITSM", "HRSD", "Access Management"],
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_AZURE_AD",
+      "name": "Azure Active Directory",
+      "vendor": "Microsoft",
+      "category": "Identity",
+      "description": "Cloud identity and access management platform used for authentication, SSO, and user provisioning.",
+      "modules": ["Identity", "SSO", "Provisioning"],
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_MULESOFT",
+      "name": "MuleSoft",
+      "vendor": "Salesforce",
+      "category": "Integration Middleware",
+      "description": "Enterprise integration platform used for API management, data transformation, and system-to-system connectivity.",
+      "modules": ["API Gateway", "Integration Flows"],
+      "status": "active"
+    }
+  ]
+  

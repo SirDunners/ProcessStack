@@ -1,0 +1,30 @@
+[
+    {
+      "integration_id": "INT_JOB_REQUISITION_SYNC",
+      "name": "Job Requisition Sync",
+      "source_system_id": "SYS_WORKDAY",
+      "target_system_id": "SYS_AVATURE",
+      "description": "Syncs approved job requisitions from Workday to Avature for job posting and candidate management.",
+      "type": "outbound",
+      "status": "active"
+    },
+    {
+      "integration_id": "INT_CANDIDATE_STATUS_SYNC",
+      "name": "Candidate Status Sync",
+      "source_system_id": "SYS_AVATURE",
+      "target_system_id": "SYS_WORKDAY",
+      "description": "Syncs candidate screening and interview statuses from Avature back into Workday.",
+      "type": "outbound",
+      "status": "active"
+    },
+    {
+      "integration_id": "INT_ACCESS_PROVISIONING",
+      "name": "Access Provisioning",
+      "source_system_id": "SYS_WORKDAY",
+      "target_system_id": "SYS_SERVICENOW",
+      "description": "Triggers access provisioning workflows in ServiceNow when a new hire is created in Workday.",
+      "type": "event_based",
+      "status": "active"
+    }
+  ]
+  

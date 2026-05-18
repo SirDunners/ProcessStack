@@ -1,0 +1,38 @@
+[
+    {
+      "persona_id": "P_MANAGER",
+      "system_id": "SYS_WORKDAY",
+      "role_id": "WD_MANAGER"
+    },
+    {
+      "persona_id": "P_MANAGER",
+      "system_id": "SYS_AVATURE",
+      "role_id": "AVA_HIRING_MANAGER"
+    },
+    {
+      "persona_id": "P_RECRUITER",
+      "system_id": "SYS_AVATURE",
+      "role_id": "AVA_RECRUITER"
+    },
+    {
+      "persona_id": "P_RECRUITER",
+      "system_id": "SYS_WORKDAY",
+      "role_id": "WD_HR_ADMIN"
+    },
+    {
+      "persona_id": "P_HR_ADMIN",
+      "system_id": "SYS_WORKDAY",
+      "role_id": "WD_HR_ADMIN"
+    },
+    {
+      "persona_id": "P_HR_ADMIN",
+      "system_id": "SYS_SERVICENOW",
+      "role_id": "SN_ACCESS_ADMIN"
+    },
+    {
+      "persona_id": "P_HR_ADMIN",
+      "system_id": "SYS_AZURE_AD",
+      "role_id": "AAD_IDENTITY_ADMIN"
+    }
+  ]
+  

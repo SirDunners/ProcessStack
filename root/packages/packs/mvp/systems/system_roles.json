@@ -1,0 +1,51 @@
+[
+    {
+      "system_id": "SYS_WORKDAY",
+      "role_id": "WD_MANAGER",
+      "name": "Manager",
+      "description": "Workday role allowing managers to create requisitions, view team data, and participate in hiring processes.",
+      "permissions": ["create_requisition", "view_team", "approve_transactions"],
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_WORKDAY",
+      "role_id": "WD_HR_ADMIN",
+      "name": "HR Administrator",
+      "description": "Workday role with access to core HR data, job requisitions, and offer creation.",
+      "permissions": ["manage_requisitions", "create_offer", "edit_employee_data"],
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_AVATURE",
+      "role_id": "AVA_RECRUITER",
+      "name": "Recruiter",
+      "description": "Avature role for managing candidates, posting jobs, and coordinating interviews.",
+      "permissions": ["post_job", "screen_candidates", "manage_interviews"],
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_AVATURE",
+      "role_id": "AVA_HIRING_MANAGER",
+      "name": "Hiring Manager",
+      "description": "Avature role allowing managers to review candidates and provide interview feedback.",
+      "permissions": ["review_candidates", "submit_feedback"],
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_SERVICENOW",
+      "role_id": "SN_ACCESS_ADMIN",
+      "name": "Access Administrator",
+      "description": "ServiceNow role for managing access requests and provisioning workflows.",
+      "permissions": ["approve_access", "provision_access"],
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_AZURE_AD",
+      "role_id": "AAD_IDENTITY_ADMIN",
+      "name": "Identity Administrator",
+      "description": "Azure AD role for managing user identities, groups, and provisioning.",
+      "permissions": ["manage_users", "manage_groups", "assign_roles"],
+      "status": "active"
+    }
+  ]
+  

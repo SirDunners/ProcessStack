@@ -1,0 +1,71 @@
+{
+    "pack_id": "mvp",
+    "name": "ProcessStack MVP Pack",
+    "version": "1.0.0",
+    "description": "Core metadata pack containing processes, personas, systems, transactions, data models, integrations, and actions for the MVP.",
+    "author": "Neil",
+    "created_at": "2026-05-18",
+  
+    "modules": {
+      "processes": {
+        "l1": "processes/l1_process_areas.json",
+        "l2": "processes/l2_process_areas.json",
+        "l3": "processes/l3_process_nodes.json",
+        "l4": "processes/l4_process_nodes.json",
+        "links": "processes/process_links.json"
+      },
+  
+      
+      
+      
+      "personas": {
+        "definitions": "personas/personas.json",
+        "system_roles": "personas/persona_system_roles.json",
+        "hierarchy": "personas/persona_hierarchy.json"
+      },
+  
+      "systems": {
+        "definitions": "systems/systems.json",
+        "modules": "systems/system_modules.json",
+        "roles": "systems/system_roles.json"
+      },
+  
+      "data_models": {
+        "definitions": "data-models/data_models.json",
+        "fields": "data-models/data_fields.json",
+        "hierarchy": "data-models/field_hierarchy.json",
+        "enums": "data-models/enums.json"
+      },
+  
+      "transactions": {
+        "definitions": "transactions/transactions.json",
+        "steps": "transactions/transaction_steps.json",
+        "links": "transactions/transaction_links.json",
+        "prepopulation": "transactions/transaction_prepopulation.json",
+        "visibility": "transactions/transaction_visibility.json"
+      },
+  
+      "actions": {
+        "system_actions": "actions/system_actions.json",
+        "events": "actions/emitted_events.json",
+        "documents": "actions/document_templates.json",
+        "emails": "actions/email_templates.json"
+      },
+  
+      "integrations": {
+        "definitions": "integrations/integrations.json",
+        "mappings": "integrations/integration_mappings.json",
+        "transforms": "integrations/integration_transforms.json",
+        "endpoints": "integrations/integration_endpoints.json",
+        "schedules": "integrations/integration_schedules.json"
+      },
+
+      "architecture": {
+        "systems_landscape": "architecture/systems_landscape.json",
+        "system_connections": "architecture/system_connections.json",
+        "data_flow_map": "architecture/data_flow_map.json",
+        "integration_topology": "architecture/integration_topology.json"
+      }
+    }
+  }
+  

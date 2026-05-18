@@ -1,0 +1,58 @@
+[
+    {
+      "connection_id": "CONN_WORKDAY_TO_AVATURE_REQ",
+      "source_system_id": "SYS_WORKDAY",
+      "target_system_id": "SYS_AVATURE",
+      "direction": "outbound",
+      "purpose": "Sync approved job requisitions from Workday to Avature for job posting.",
+      "transport": "REST",
+      "frequency": "hourly",
+      "integration_ids": ["INT_JOB_REQUISITION_SYNC"],
+      "dependency": "Workday is the source of truth for requisitions."
+    },
+    {
+      "connection_id": "CONN_AVATURE_TO_WORKDAY_STATUS",
+      "source_system_id": "SYS_AVATURE",
+      "target_system_id": "SYS_WORKDAY",
+      "direction": "outbound",
+      "purpose": "Sync candidate screening and interview statuses back to Workday.",
+      "transport": "REST",
+      "frequency": "every_15_minutes",
+      "integration_ids": ["INT_CANDIDATE_STATUS_SYNC"],
+      "dependency": "Avature is the source of truth for candidate progress."
+    },
+    {
+      "connection_id": "CONN_WORKDAY_TO_SERVICENOW_ACCESS",
+      "source_system_id": "SYS_WORKDAY",
+      "target_system_id": "SYS_SERVICENOW",
+      "direction": "event_based",
+      "purpose": "Trigger access provisioning workflows when a new hire is created.",
+      "transport": "EVENT",
+      "frequency": "event_driven",
+      "integration_ids": ["INT_ACCESS_PROVISIONING"],
+      "dependency": "Workday new hire events must be published for provisioning."
+    },
+    {
+      "connection_id": "CONN_SERVICENOW_TO_AZURE_AD",
+      "source_system_id": "SYS_SERVICENOW",
+      "target_system_id": "SYS_AZURE_AD",
+      "direction": "outbound",
+      "purpose": "Provision user accounts and assign access based on approved requests.",
+      "transport": "REST",
+      "frequency": "real_time",
+      "integration_ids": [],
+      "dependency": "ServiceNow workflows must complete before provisioning."
+    },
+    {
+      "connection_id": "CONN_MULESOFT_TO_ALL",
+      "source_system_id": "SYS_MULESOFT",
+      "target_system_id": "SYS_WORKDAY",
+      "direction": "middleware",
+      "purpose": "Acts as the integration gateway for Workday APIs and transformations.",
+      "transport": "API_GATEWAY",
+      "frequency": "real_time",
+      "integration_ids": ["INT_JOB_REQUISITION_SYNC", "INT_CANDIDATE_STATUS_SYNC"],
+      "dependency": "MuleSoft must be available for API routing."
+    }
+  ]
+  

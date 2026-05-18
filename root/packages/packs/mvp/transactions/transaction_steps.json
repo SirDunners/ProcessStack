@@ -1,0 +1,83 @@
+[
+    {
+      "transaction_id": "TRX_CREATE_REQ_MANAGER",
+      "step_id": "STEP_CREATE_REQ_MGR_1",
+      "order": 1,
+      "name": "Basic Job Details",
+      "data_model_id": "DM_WORKDAY_JOB_REQUISITION",
+      "required_fields": ["job_title", "job_family", "org_unit"],
+      "view_only_fields": [],
+      "prepopulated_fields": ["manager_id"]
+    },
+    {
+      "transaction_id": "TRX_CREATE_REQ_MANAGER",
+      "step_id": "STEP_CREATE_REQ_MGR_2",
+      "order": 2,
+      "name": "Location Details",
+      "data_model_id": "DM_WORKDAY_LOCATION",
+      "required_fields": ["country", "state", "city", "location"],
+      "view_only_fields": [],
+      "prepopulated_fields": []
+    },
+    {
+      "transaction_id": "TRX_CREATE_REQ_RECRUITER",
+      "step_id": "STEP_CREATE_REQ_REC_1",
+      "order": 1,
+      "name": "Requisition Details",
+      "data_model_id": "DM_AVATURE_JOB",
+      "required_fields": ["job_title", "job_description"],
+      "view_only_fields": ["org_unit"],
+      "prepopulated_fields": ["job_title", "org_unit"]
+    },
+    {
+      "transaction_id": "TRX_POST_JOB",
+      "step_id": "STEP_POST_JOB_1",
+      "order": 1,
+      "name": "Job Board Selection",
+      "data_model_id": "DM_AVATURE_POSTING",
+      "required_fields": ["job_boards"],
+      "view_only_fields": [],
+      "prepopulated_fields": []
+    },
+    {
+      "transaction_id": "TRX_SCREEN_CANDIDATES",
+      "step_id": "STEP_SCREEN_1",
+      "order": 1,
+      "name": "Candidate Review",
+      "data_model_id": "DM_AVATURE_CANDIDATE",
+      "required_fields": ["screening_status"],
+      "view_only_fields": ["candidate_name", "candidate_email"],
+      "prepopulated_fields": ["candidate_name", "candidate_email"]
+    },
+    {
+      "transaction_id": "TRX_INTERVIEW_MANAGER",
+      "step_id": "STEP_INT_MGR_1",
+      "order": 1,
+      "name": "Interview Feedback",
+      "data_model_id": "DM_AVATURE_INTERVIEW",
+      "required_fields": ["overall_rating", "comments"],
+      "view_only_fields": ["candidate_name"],
+      "prepopulated_fields": ["candidate_name"]
+    },
+    {
+      "transaction_id": "TRX_INTERVIEW_RECRUITER",
+      "step_id": "STEP_INT_REC_1",
+      "order": 1,
+      "name": "Interview Coordination",
+      "data_model_id": "DM_AVATURE_INTERVIEW",
+      "required_fields": ["interview_date", "interviewer"],
+      "view_only_fields": ["candidate_name"],
+      "prepopulated_fields": ["candidate_name"]
+    },
+    {
+      "transaction_id": "TRX_CREATE_OFFER",
+      "step_id": "STEP_CREATE_OFFER_1",
+      "order": 1,
+      "name": "Offer Details",
+      "data_model_id": "DM_WORKDAY_OFFER",
+      "required_fields": ["salary", "start_date", "currency"],
+      "view_only_fields": ["candidate_name"],
+      "prepopulated_fields": ["candidate_name"]
+    }
+  ]
+  

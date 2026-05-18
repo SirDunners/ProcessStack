@@ -1,0 +1,53 @@
+[
+    {
+      "flow_id": "FLOW_JOB_REQUISITION_TO_AVATURE",
+      "source_system_id": "SYS_WORKDAY",
+      "target_system_id": "SYS_AVATURE",
+      "source_data_model_id": "DM_WORKDAY_JOB_REQUISITION",
+      "target_data_model_id": "DM_AVATURE_JOB",
+      "description": "Transfers approved job requisitions from Workday to Avature for job posting and candidate management.",
+      "fields": [
+        { "source_field": "job_title", "target_field": "job_title" },
+        { "source_field": "job_description", "target_field": "job_description" },
+        { "source_field": "org_unit", "target_field": "job_family" }
+      ],
+      "transforms": ["TR_JOB_FAMILY_NORMALISE"],
+      "integration_id": "INT_JOB_REQUISITION_SYNC",
+      "trigger": "approval",
+      "frequency": "hourly"
+    },
+    {
+      "flow_id": "FLOW_CANDIDATE_STATUS_TO_WORKDAY",
+      "source_system_id": "SYS_AVATURE",
+      "target_system_id": "SYS_WORKDAY",
+      "source_data_model_id": "DM_AVATURE_CANDIDATE",
+      "target_data_model_id": "DM_WORKDAY_JOB_REQUISITION",
+      "description": "Syncs candidate screening and interview statuses from Avature back into Workday.",
+      "fields": [
+        { "source_field": "screening_status", "target_field": "screening_status" },
+        { "source_field": "candidate_name", "target_field": "candidate_name" }
+      ],
+      "transforms": ["TR_SCREENING_STATUS_MAP"],
+      "integration_id": "INT_CANDIDATE_STATUS_SYNC",
+      "trigger": "status_change",
+      "frequency": "every_15_minutes"
+    },
+    {
+      "flow_id": "FLOW_NEW_HIRE_TO_SERVICENOW",
+      "source_system_id": "SYS_WORKDAY",
+      "target_system_id": "SYS_SERVICENOW",
+      "source_data_model_id": "DM_WORKDAY_OFFER",
+      "target_data_model_id": null,
+      "description": "Publishes new hire events from Workday to ServiceNow to trigger access provisioning workflows.",
+      "fields": [
+        { "source_field": "start_date", "target_field": null },
+        { "source_field": "salary", "target_field": null },
+        { "source_field": "currency", "target_field": null }
+      ],
+      "transforms": [],
+      "integration_id": "INT_ACCESS_PROVISIONING",
+      "trigger": "event:new_hire_created",
+      "frequency": "event_driven"
+    }
+  ]
+  

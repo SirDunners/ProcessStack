@@ -1,0 +1,15 @@
+[
+    {
+      "integration_id": "INT_JOB_REQUISITION_SYNC",
+      "transform_id": "TR_JOB_FAMILY_NORMALISE",
+      "description": "Normalises Workday job family values to Avature job family codes.",
+      "logic": "map(job_family, { 'Technology': 'TECH', 'Finance': 'FINANCE', 'HR': 'HR', 'Operations': 'OPS' })"
+    },
+    {
+      "integration_id": "INT_CANDIDATE_STATUS_SYNC",
+      "transform_id": "TR_SCREENING_STATUS_MAP",
+      "description": "Maps Avature screening statuses to Workday equivalents.",
+      "logic": "map(screening_status, { 'New': 'NEW', 'In Review': 'IN_REVIEW', 'Shortlisted': 'SHORTLISTED', 'Rejected': 'REJECTED' })"
+    }
+  ]
+  

@@ -1,0 +1,24 @@
+[
+    {
+      "integration_id": "INT_JOB_REQUISITION_SYNC",
+      "schedule_id": "SCH_JOB_REQ_HOURLY",
+      "frequency": "hourly",
+      "time": null,
+      "timezone": "UTC"
+    },
+    {
+      "integration_id": "INT_CANDIDATE_STATUS_SYNC",
+      "schedule_id": "SCH_CANDIDATE_STATUS_15MIN",
+      "frequency": "every_15_minutes",
+      "time": null,
+      "timezone": "UTC"
+    },
+    {
+      "integration_id": "INT_ACCESS_PROVISIONING",
+      "schedule_id": "SCH_EVENT_DRIVEN",
+      "frequency": "event_based",
+      "time": null,
+      "timezone": "UTC"
+    }
+  ]
+  

@@ -1,0 +1,47 @@
+[
+    {
+      "topology_id": "TOPOLOGY_REST_SYNC",
+      "name": "REST Synchronous API",
+      "description": "Standard REST API call where the source system sends a request and waits for a response.",
+      "protocol": "HTTPS",
+      "pattern": "request_response",
+      "used_by_integrations": ["INT_JOB_REQUISITION_SYNC", "INT_CANDIDATE_STATUS_SYNC"],
+      "security": "OAuth2",
+      "latency": "low",
+      "reliability": "medium"
+    },
+    {
+      "topology_id": "TOPOLOGY_EVENT_DRIVEN",
+      "name": "Event-Driven Messaging",
+      "description": "Source system publishes an event which downstream systems consume asynchronously.",
+      "protocol": "EVENT",
+      "pattern": "pub_sub",
+      "used_by_integrations": ["INT_ACCESS_PROVISIONING"],
+      "security": "service_account",
+      "latency": "real_time",
+      "reliability": "high"
+    },
+    {
+      "topology_id": "TOPOLOGY_API_GATEWAY",
+      "name": "API Gateway Routing",
+      "description": "Middleware (MuleSoft) acts as a gateway for routing, throttling, and transforming API traffic.",
+      "protocol": "HTTPS",
+      "pattern": "gateway_proxy",
+      "used_by_integrations": ["INT_JOB_REQUISITION_SYNC", "INT_CANDIDATE_STATUS_SYNC"],
+      "security": "OAuth2 + Gateway Policies",
+      "latency": "low",
+      "reliability": "high"
+    },
+    {
+      "topology_id": "TOPOLOGY_BATCH",
+      "name": "Batch Scheduled Processing",
+      "description": "Data is processed in scheduled batches rather than real-time.",
+      "protocol": "HTTPS",
+      "pattern": "batch",
+      "used_by_integrations": ["INT_JOB_REQUISITION_SYNC"],
+      "security": "OAuth2",
+      "latency": "scheduled",
+      "reliability": "high"
+    }
+  ]
+  

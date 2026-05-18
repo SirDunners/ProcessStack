@@ -1,0 +1,63 @@
+[
+    {
+      "system_id": "SYS_WORKDAY",
+      "name": "Workday",
+      "vendor": "Workday Inc.",
+      "category": "HCM",
+      "description": "Core HR and recruiting system used for employee data, job requisitions, offers, and organisational structures.",
+      "criticality": "high",
+      "data_domains": ["HR Core", "Recruiting", "Compensation"],
+      "integrations": ["INT_JOB_REQUISITION_SYNC", "INT_CANDIDATE_STATUS_SYNC", "INT_ACCESS_PROVISIONING"],
+      "owner": "HR Technology",
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_AVATURE",
+      "name": "Avature",
+      "vendor": "Avature",
+      "category": "ATS",
+      "description": "Talent acquisition and CRM platform used for job postings, candidate management, interviews, and screening.",
+      "criticality": "high",
+      "data_domains": ["Recruiting", "Candidate Data"],
+      "integrations": ["INT_JOB_REQUISITION_SYNC", "INT_CANDIDATE_STATUS_SYNC"],
+      "owner": "Talent Acquisition",
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_SERVICENOW",
+      "name": "ServiceNow",
+      "vendor": "ServiceNow",
+      "category": "ITSM",
+      "description": "Enterprise workflow platform used for access provisioning, IT service management, and HR service delivery.",
+      "criticality": "medium",
+      "data_domains": ["Access Management", "ITSM", "HR Case Management"],
+      "integrations": ["INT_ACCESS_PROVISIONING"],
+      "owner": "IT Operations",
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_AZURE_AD",
+      "name": "Azure Active Directory",
+      "vendor": "Microsoft",
+      "category": "Identity",
+      "description": "Identity and access management system providing authentication, SSO, and user provisioning.",
+      "criticality": "high",
+      "data_domains": ["Identity", "Access"],
+      "integrations": [],
+      "owner": "IT Security",
+      "status": "active"
+    },
+    {
+      "system_id": "SYS_MULESOFT",
+      "name": "MuleSoft",
+      "vendor": "Salesforce",
+      "category": "Integration Middleware",
+      "description": "Enterprise integration platform used for API management, data transformation, and system-to-system connectivity.",
+      "criticality": "medium",
+      "data_domains": ["Integration", "APIs"],
+      "integrations": ["INT_JOB_REQUISITION_SYNC", "INT_CANDIDATE_STATUS_SYNC"],
+      "owner": "Integration Services",
+      "status": "active"
+    }
+  ]
+  

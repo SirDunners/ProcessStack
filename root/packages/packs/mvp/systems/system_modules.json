@@ -1,0 +1,63 @@
+[
+    {
+      "system_id": "SYS_WORKDAY",
+      "module_id": "WD_CORE_HR",
+      "name": "Core HR",
+      "description": "Employee records, job profiles, organisations, and position management."
+    },
+    {
+      "system_id": "SYS_WORKDAY",
+      "module_id": "WD_RECRUITING",
+      "name": "Recruiting",
+      "description": "Job requisitions, job postings, candidates, interviews, and offers."
+    },
+    {
+      "system_id": "SYS_WORKDAY",
+      "module_id": "WD_COMPENSATION",
+      "name": "Compensation",
+      "description": "Salary structures, compensation plans, and pay components."
+    },
+    {
+      "system_id": "SYS_AVATURE",
+      "module_id": "AVA_ATS",
+      "name": "ATS",
+      "description": "Job postings, candidate management, and recruiting workflows."
+    },
+    {
+      "system_id": "SYS_AVATURE",
+      "module_id": "AVA_CRM",
+      "name": "CRM",
+      "description": "Talent pools, sourcing campaigns, and candidate engagement."
+    },
+    {
+      "system_id": "SYS_SERVICENOW",
+      "module_id": "SN_ITSM",
+      "name": "ITSM",
+      "description": "Incident, request, and change management."
+    },
+    {
+      "system_id": "SYS_SERVICENOW",
+      "module_id": "SN_HRSD",
+      "name": "HR Service Delivery",
+      "description": "HR case management and employee service workflows."
+    },
+    {
+      "system_id": "SYS_AZURE_AD",
+      "module_id": "AAD_IDENTITY",
+      "name": "Identity",
+      "description": "User identities, authentication, and SSO."
+    },
+    {
+      "system_id": "SYS_MULESOFT",
+      "module_id": "MS_API_GATEWAY",
+      "name": "API Gateway",
+      "description": "API management, routing, and security."
+    },
+    {
+      "system_id": "SYS_MULESOFT",
+      "module_id": "MS_INTEGRATION",
+      "name": "Integration Flows",
+      "description": "System-to-system integrations and data transformations."
+    }
+  ]
+  

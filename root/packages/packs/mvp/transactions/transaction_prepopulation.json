@@ -1,0 +1,89 @@
+[
+    {
+      "transaction_id": "TRX_CREATE_REQ_MANAGER",
+      "step_id": "STEP_CREATE_REQ_MGR_1",
+      "field_id": "manager_id",
+      "source": "persona_attribute",
+      "source_key": "manager_id",
+      "rule": null,
+      "description": "Prepopulate manager ID from the logged-in persona's hierarchy attributes."
+    },
+    {
+      "transaction_id": "TRX_CREATE_REQ_RECRUITER",
+      "step_id": "STEP_CREATE_REQ_REC_1",
+      "field_id": "job_title",
+      "source": "previous_transaction",
+      "source_transaction_id": "TRX_CREATE_REQ_MANAGER",
+      "source_field_id": "job_title",
+      "rule": null,
+      "description": "Carry forward job title from the manager's requisition creation."
+    },
+    {
+      "transaction_id": "TRX_CREATE_REQ_RECRUITER",
+      "step_id": "STEP_CREATE_REQ_REC_1",
+      "field_id": "org_unit",
+      "source": "previous_transaction",
+      "source_transaction_id": "TRX_CREATE_REQ_MANAGER",
+      "source_field_id": "org_unit",
+      "rule": null,
+      "description": "Carry forward organisational unit from the manager's requisition."
+    },
+    {
+      "transaction_id": "TRX_SCREEN_CANDIDATES",
+      "step_id": "STEP_SCREEN_1",
+      "field_id": "candidate_name",
+      "source": "system_lookup",
+      "source_key": "candidate_id",
+      "rule": "lookup('candidate_name')",
+      "description": "Populate candidate name based on candidate ID from system data."
+    },
+    {
+      "transaction_id": "TRX_SCREEN_CANDIDATES",
+      "step_id": "STEP_SCREEN_1",
+      "field_id": "candidate_email",
+      "source": "system_lookup",
+      "source_key": "candidate_id",
+      "rule": "lookup('candidate_email')",
+      "description": "Populate candidate email from system data."
+    },
+    {
+      "transaction_id": "TRX_INTERVIEW_MANAGER",
+      "step_id": "STEP_INT_MGR_1",
+      "field_id": "candidate_name",
+      "source": "previous_transaction",
+      "source_transaction_id": "TRX_SCREEN_CANDIDATES",
+      "source_field_id": "candidate_name",
+      "rule": null,
+      "description": "Carry forward candidate name from screening."
+    },
+    {
+      "transaction_id": "TRX_INTERVIEW_RECRUITER",
+      "step_id": "STEP_INT_REC_1",
+      "field_id": "candidate_name",
+      "source": "previous_transaction",
+      "source_transaction_id": "TRX_SCREEN_CANDIDATES",
+      "source_field_id": "candidate_name",
+      "rule": null,
+      "description": "Carry forward candidate name from screening."
+    },
+    {
+      "transaction_id": "TRX_CREATE_OFFER",
+      "step_id": "STEP_CREATE_OFFER_1",
+      "field_id": "candidate_name",
+      "source": "previous_transaction",
+      "source_transaction_id": "TRX_INTERVIEW_MANAGER",
+      "source_field_id": "candidate_name",
+      "rule": null,
+      "description": "Carry forward candidate name from manager interview."
+    },
+    {
+      "transaction_id": "TRX_CREATE_OFFER",
+      "step_id": "STEP_CREATE_OFFER_1",
+      "field_id": "currency",
+      "source": "default_value",
+      "default_value": "GBP",
+      "rule": null,
+      "description": "Default offer currency to GBP for UK-based organisations."
+    }
+  ]
+  

@@ -1,0 +1,73 @@
+[
+    {
+      "data_model_id": "DM_WORKDAY_JOB_REQUISITION",
+      "section_id": "SEC_JOB_REQ_DETAILS",
+      "name": "Job Details",
+      "order": 1,
+      "fields": ["job_title", "job_family", "org_unit"]
+    },
+    {
+      "data_model_id": "DM_WORKDAY_JOB_REQUISITION",
+      "section_id": "SEC_JOB_REQ_MANAGER",
+      "name": "Manager Information",
+      "order": 2,
+      "fields": ["manager_id"]
+    },
+    {
+      "data_model_id": "DM_WORKDAY_LOCATION",
+      "section_id": "SEC_LOCATION_DETAILS",
+      "name": "Location Details",
+      "order": 1,
+      "fields": ["country", "state", "city", "location"]
+    },
+    {
+      "data_model_id": "DM_AVATURE_JOB",
+      "section_id": "SEC_AVA_JOB_DETAILS",
+      "name": "Job Posting Details",
+      "order": 1,
+      "fields": ["job_title", "job_description"]
+    },
+    {
+      "data_model_id": "DM_AVATURE_POSTING",
+      "section_id": "SEC_AVA_POSTING_CONFIG",
+      "name": "Posting Configuration",
+      "order": 1,
+      "fields": ["job_boards"]
+    },
+    {
+      "data_model_id": "DM_AVATURE_CANDIDATE",
+      "section_id": "SEC_CANDIDATE_PERSONAL",
+      "name": "Candidate Personal Information",
+      "order": 1,
+      "fields": ["candidate_name", "candidate_email"]
+    },
+    {
+      "data_model_id": "DM_AVATURE_CANDIDATE",
+      "section_id": "SEC_CANDIDATE_STATUS",
+      "name": "Screening Status",
+      "order": 2,
+      "fields": ["screening_status"]
+    },
+    {
+      "data_model_id": "DM_AVATURE_INTERVIEW",
+      "section_id": "SEC_INTERVIEW_DETAILS",
+      "name": "Interview Details",
+      "order": 1,
+      "fields": ["interview_date", "interviewer"]
+    },
+    {
+      "data_model_id": "DM_AVATURE_INTERVIEW",
+      "section_id": "SEC_INTERVIEW_FEEDBACK",
+      "name": "Interview Feedback",
+      "order": 2,
+      "fields": ["overall_rating", "comments"]
+    },
+    {
+      "data_model_id": "DM_WORKDAY_OFFER",
+      "section_id": "SEC_OFFER_DETAILS",
+      "name": "Offer Details",
+      "order": 1,
+      "fields": ["salary", "start_date", "currency"]
+    }
+  ]
+  

@@ -1,0 +1,52 @@
+[
+    {
+      "from_transaction_id": "TRX_CREATE_REQ_MANAGER",
+      "to_transaction_id": "TRX_CREATE_REQ_RECRUITER",
+      "type": "mandatory",
+      "condition": null,
+      "label": "Recruiter refines requisition"
+    },
+    {
+      "from_transaction_id": "TRX_CREATE_REQ_RECRUITER",
+      "to_transaction_id": "TRX_POST_JOB",
+      "type": "mandatory",
+      "condition": null,
+      "label": "Post job after requisition approval"
+    },
+    {
+      "from_transaction_id": "TRX_POST_JOB",
+      "to_transaction_id": "TRX_SCREEN_CANDIDATES",
+      "type": "mandatory",
+      "condition": null,
+      "label": "Begin screening once job is posted"
+    },
+    {
+      "from_transaction_id": "TRX_SCREEN_CANDIDATES",
+      "to_transaction_id": "TRX_INTERVIEW_RECRUITER",
+      "type": "optional",
+      "condition": "candidate_status == 'shortlisted'",
+      "label": "Schedule interviews for shortlisted candidates"
+    },
+    {
+      "from_transaction_id": "TRX_INTERVIEW_RECRUITER",
+      "to_transaction_id": "TRX_INTERVIEW_MANAGER",
+      "type": "mandatory",
+      "condition": null,
+      "label": "Manager conducts interview"
+    },
+    {
+      "from_transaction_id": "TRX_INTERVIEW_MANAGER",
+      "to_transaction_id": "TRX_CREATE_OFFER",
+      "type": "conditional",
+      "condition": "overall_rating >= 4",
+      "label": "Create offer for strong candidates"
+    },
+    {
+      "from_transaction_id": "TRX_INTERVIEW_MANAGER",
+      "to_transaction_id": "TRX_SCREEN_CANDIDATES",
+      "type": "conditional",
+      "condition": "overall_rating < 4",
+      "label": "Return to screening for alternative candidates"
+    }
+  ]
+  

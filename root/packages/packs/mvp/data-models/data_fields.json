@@ -1,0 +1,167 @@
+[
+    {
+      "field_id": "job_title",
+      "data_model_id": "DM_WORKDAY_JOB_REQUISITION",
+      "name": "Job Title",
+      "type": "string",
+      "description": "Title of the job being requested.",
+      "required": true
+    },
+    {
+      "field_id": "job_family",
+      "data_model_id": "DM_WORKDAY_JOB_REQUISITION",
+      "name": "Job Family",
+      "type": "string",
+      "description": "Job family or job category associated with the requisition.",
+      "required": true
+    },
+    {
+      "field_id": "org_unit",
+      "data_model_id": "DM_WORKDAY_JOB_REQUISITION",
+      "name": "Organisation Unit",
+      "type": "string",
+      "description": "The organisational unit where the role sits.",
+      "required": true
+    },
+    {
+      "field_id": "manager_id",
+      "data_model_id": "DM_WORKDAY_JOB_REQUISITION",
+      "name": "Manager ID",
+      "type": "string",
+      "description": "Identifier of the hiring manager.",
+      "required": false
+    },
+    {
+      "field_id": "country",
+      "data_model_id": "DM_WORKDAY_LOCATION",
+      "name": "Country",
+      "type": "string",
+      "description": "Country of the work location.",
+      "required": true
+    },
+    {
+      "field_id": "state",
+      "data_model_id": "DM_WORKDAY_LOCATION",
+      "name": "State",
+      "type": "string",
+      "description": "State or region of the work location.",
+      "required": true
+    },
+    {
+      "field_id": "city",
+      "data_model_id": "DM_WORKDAY_LOCATION",
+      "name": "City",
+      "type": "string",
+      "description": "City of the work location.",
+      "required": true
+    },
+    {
+      "field_id": "location",
+      "data_model_id": "DM_WORKDAY_LOCATION",
+      "name": "Location",
+      "type": "string",
+      "description": "Specific site or office location.",
+      "required": true
+    },
+    {
+      "field_id": "job_description",
+      "data_model_id": "DM_AVATURE_JOB",
+      "name": "Job Description",
+      "type": "text",
+      "description": "Full job description for the posting.",
+      "required": true
+    },
+    {
+      "field_id": "job_boards",
+      "data_model_id": "DM_AVATURE_POSTING",
+      "name": "Job Boards",
+      "type": "list",
+      "description": "List of job boards where the job will be posted.",
+      "required": true
+    },
+    {
+      "field_id": "candidate_name",
+      "data_model_id": "DM_AVATURE_CANDIDATE",
+      "name": "Candidate Name",
+      "type": "string",
+      "description": "Full name of the candidate.",
+      "required": true
+    },
+    {
+      "field_id": "candidate_email",
+      "data_model_id": "DM_AVATURE_CANDIDATE",
+      "name": "Candidate Email",
+      "type": "string",
+      "description": "Email address of the candidate.",
+      "required": true,
+      "validation": "email"
+    },
+    {
+      "field_id": "screening_status",
+      "data_model_id": "DM_AVATURE_CANDIDATE",
+      "name": "Screening Status",
+      "type": "string",
+      "description": "Current screening status of the candidate.",
+      "required": true,
+      "enum_id": "ENUM_SCREENING_STATUS"
+    },
+    {
+      "field_id": "interview_date",
+      "data_model_id": "DM_AVATURE_INTERVIEW",
+      "name": "Interview Date",
+      "type": "date",
+      "description": "Scheduled date of the interview.",
+      "required": true
+    },
+    {
+      "field_id": "interviewer",
+      "data_model_id": "DM_AVATURE_INTERVIEW",
+      "name": "Interviewer",
+      "type": "string",
+      "description": "Name or ID of the interviewer.",
+      "required": true
+    },
+    {
+      "field_id": "overall_rating",
+      "data_model_id": "DM_AVATURE_INTERVIEW",
+      "name": "Overall Rating",
+      "type": "number",
+      "description": "Overall interview rating provided by the interviewer.",
+      "required": true,
+      "validation": "min:1|max:5"
+    },
+    {
+      "field_id": "comments",
+      "data_model_id": "DM_AVATURE_INTERVIEW",
+      "name": "Comments",
+      "type": "text",
+      "description": "Interview feedback comments.",
+      "required": false
+    },
+    {
+      "field_id": "salary",
+      "data_model_id": "DM_WORKDAY_OFFER",
+      "name": "Salary",
+      "type": "number",
+      "description": "Proposed salary for the offer.",
+      "required": true
+    },
+    {
+      "field_id": "start_date",
+      "data_model_id": "DM_WORKDAY_OFFER",
+      "name": "Start Date",
+      "type": "date",
+      "description": "Proposed start date for the candidate.",
+      "required": true
+    },
+    {
+      "field_id": "currency",
+      "data_model_id": "DM_WORKDAY_OFFER",
+      "name": "Currency",
+      "type": "string",
+      "description": "Currency of the offer salary.",
+      "required": true,
+      "enum_id": "ENUM_CURRENCY"
+    }
+  ]
+  

@@ -1,0 +1,102 @@
+[
+    {
+      "transaction_id": "TRX_CREATE_REQ_MANAGER",
+      "step_id": "STEP_CREATE_REQ_MGR_1",
+      "field_id": "manager_id",
+      "persona_id": "P_MANAGER",
+      "visibility": "view_only",
+      "rule": null,
+      "description": "Manager ID is visible but not editable for the Manager persona."
+    },
+    {
+      "transaction_id": "TRX_CREATE_REQ_MANAGER",
+      "step_id": "STEP_CREATE_REQ_MGR_1",
+      "field_id": "org_unit",
+      "persona_id": "P_MANAGER",
+      "visibility": "editable",
+      "rule": null,
+      "description": "Manager can select the organisational unit for the requisition."
+    },
+    {
+      "transaction_id": "TRX_CREATE_REQ_RECRUITER",
+      "step_id": "STEP_CREATE_REQ_REC_1",
+      "field_id": "org_unit",
+      "persona_id": "P_RECRUITER",
+      "visibility": "view_only",
+      "rule": null,
+      "description": "Recruiter can see but not edit the org unit inherited from the manager."
+    },
+    {
+      "transaction_id": "TRX_CREATE_REQ_RECRUITER",
+      "step_id": "STEP_CREATE_REQ_REC_1",
+      "field_id": "job_title",
+      "persona_id": "P_RECRUITER",
+      "visibility": "editable",
+      "rule": null,
+      "description": "Recruiter can refine the job title."
+    },
+    {
+      "transaction_id": "TRX_SCREEN_CANDIDATES",
+      "step_id": "STEP_SCREEN_1",
+      "field_id": "candidate_email",
+      "persona_id": "P_RECRUITER",
+      "visibility": "view_only",
+      "rule": null,
+      "description": "Candidate email is visible but cannot be edited."
+    },
+    {
+      "transaction_id": "TRX_SCREEN_CANDIDATES",
+      "step_id": "STEP_SCREEN_1",
+      "field_id": "screening_status",
+      "persona_id": "P_RECRUITER",
+      "visibility": "editable",
+      "rule": null,
+      "description": "Recruiter can update the screening status."
+    },
+    {
+      "transaction_id": "TRX_INTERVIEW_MANAGER",
+      "step_id": "STEP_INT_MGR_1",
+      "field_id": "overall_rating",
+      "persona_id": "P_MANAGER",
+      "visibility": "editable",
+      "rule": null,
+      "description": "Manager provides the interview rating."
+    },
+    {
+      "transaction_id": "TRX_INTERVIEW_MANAGER",
+      "step_id": "STEP_INT_MGR_1",
+      "field_id": "candidate_name",
+      "persona_id": "P_MANAGER",
+      "visibility": "view_only",
+      "rule": null,
+      "description": "Candidate name is prepopulated and view-only."
+    },
+    {
+      "transaction_id": "TRX_CREATE_OFFER",
+      "step_id": "STEP_CREATE_OFFER_1",
+      "field_id": "salary",
+      "persona_id": "P_HR_ADMIN",
+      "visibility": "editable",
+      "rule": null,
+      "description": "HR Admin enters the salary for the offer."
+    },
+    {
+      "transaction_id": "TRX_CREATE_OFFER",
+      "step_id": "STEP_CREATE_OFFER_1",
+      "field_id": "candidate_name",
+      "persona_id": "P_HR_ADMIN",
+      "visibility": "view_only",
+      "rule": null,
+      "description": "Candidate name is carried forward and cannot be edited."
+    },
+    {
+      "transaction_id": "TRX_CREATE_OFFER",
+      "step_id": "STEP_CREATE_OFFER_1",
+      "field_id": "currency",
+      "persona_id": "P_HR_ADMIN",
+      "visibility": "editable",
+      "rule": "country == 'UK'",
+      "description": "Currency is editable only for UK-based offers."
+    }
+  ]
+  

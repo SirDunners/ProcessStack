@@ -1,0 +1,27 @@
+[
+    {
+      "l2_id": "L2_HR",
+      "l1_id": "L1_ORG",
+      "name": "Human Resources",
+      "description": "End-to-end HR processes including recruiting, onboarding, core HR, and talent."
+    },
+    {
+      "l2_id": "L2_FIN",
+      "l1_id": "L1_ORG",
+      "name": "Finance",
+      "description": "Financial operations, budgeting, procurement, and accounting."
+    },
+    {
+      "l2_id": "L2_IT",
+      "l1_id": "L1_ORG",
+      "name": "IT & Access",
+      "description": "Technology, access management, and system provisioning."
+    },
+    {
+      "l2_id": "L2_OPS",
+      "l1_id": "L1_ORG",
+      "name": "Operations",
+      "description": "Operational processes supporting business delivery."
+    }
+  ]
+  

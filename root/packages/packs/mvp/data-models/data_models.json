@@ -1,0 +1,66 @@
+[
+    {
+      "data_model_id": "DM_WORKDAY_JOB_REQUISITION",
+      "system_id": "SYS_WORKDAY",
+      "module_id": "WD_RECRUITING",
+      "name": "Job Requisition",
+      "description": "Represents a job requisition in Workday, including job details, organisational data, and hiring requirements.",
+      "fields": [],
+      "status": "active"
+    },
+    {
+      "data_model_id": "DM_WORKDAY_LOCATION",
+      "system_id": "SYS_WORKDAY",
+      "module_id": "WD_CORE_HR",
+      "name": "Location",
+      "description": "Represents a physical or virtual work location, including country, state, city, and site details.",
+      "fields": [],
+      "status": "active"
+    },
+    {
+      "data_model_id": "DM_AVATURE_JOB",
+      "system_id": "SYS_AVATURE",
+      "module_id": "AVA_ATS",
+      "name": "Job Posting",
+      "description": "Represents a job posting in Avature, including job title, description, and posting metadata.",
+      "fields": [],
+      "status": "active"
+    },
+    {
+      "data_model_id": "DM_AVATURE_POSTING",
+      "system_id": "SYS_AVATURE",
+      "module_id": "AVA_ATS",
+      "name": "Job Board Posting",
+      "description": "Represents the configuration for posting a job to internal and external job boards.",
+      "fields": [],
+      "status": "active"
+    },
+    {
+      "data_model_id": "DM_AVATURE_CANDIDATE",
+      "system_id": "SYS_AVATURE",
+      "module_id": "AVA_ATS",
+      "name": "Candidate",
+      "description": "Represents a candidate profile including personal details, application data, and status.",
+      "fields": [],
+      "status": "active"
+    },
+    {
+      "data_model_id": "DM_AVATURE_INTERVIEW",
+      "system_id": "SYS_AVATURE",
+      "module_id": "AVA_ATS",
+      "name": "Interview",
+      "description": "Represents an interview event including date, interviewer, feedback, and ratings.",
+      "fields": [],
+      "status": "active"
+    },
+    {
+      "data_model_id": "DM_WORKDAY_OFFER",
+      "system_id": "SYS_WORKDAY",
+      "module_id": "WD_RECRUITING",
+      "name": "Offer",
+      "description": "Represents an offer package including salary, start date, currency, and candidate details.",
+      "fields": [],
+      "status": "active"
+    }
+  ]
+  

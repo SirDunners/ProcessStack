@@ -1,0 +1,27 @@
+[
+    {
+      "persona_id": "P_MANAGER",
+      "name": "Manager",
+      "description": "People manager responsible for initiating requisitions, reviewing candidates, and providing interview feedback.",
+      "avatar": "manager.png",
+      "capabilities": ["create_requisition", "review_candidates", "submit_feedback"],
+      "status": "active"
+    },
+    {
+      "persona_id": "P_RECRUITER",
+      "name": "Recruiter",
+      "description": "Talent acquisition specialist responsible for screening candidates, coordinating interviews, and managing job postings.",
+      "avatar": "recruiter.png",
+      "capabilities": ["screen_candidates", "post_jobs", "manage_interviews"],
+      "status": "active"
+    },
+    {
+      "persona_id": "P_HR_ADMIN",
+      "name": "HR Administrator",
+      "description": "HR operations specialist responsible for creating offers, managing employee data, and supporting hiring processes.",
+      "avatar": "hr_admin.png",
+      "capabilities": ["create_offer", "manage_employee_data"],
+      "status": "active"
+    }
+  ]
+  

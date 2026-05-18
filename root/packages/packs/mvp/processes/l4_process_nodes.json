@@ -1,0 +1,33 @@
+[
+    {
+      "l4_id": "L4_CREATE_REQ",
+      "l3_id": "L3_RECRUITING",
+      "name": "Create Requisition",
+      "description": "Define and submit a new job requisition for approval."
+    },
+    {
+      "l4_id": "L4_POST_JOB",
+      "l3_id": "L3_RECRUITING",
+      "name": "Post Job",
+      "description": "Publish the approved requisition to internal and external job boards."
+    },
+    {
+      "l4_id": "L4_SCREEN_CANDIDATES",
+      "l3_id": "L3_RECRUITING",
+      "name": "Screen Candidates",
+      "description": "Review and shortlist applicants for further evaluation."
+    },
+    {
+      "l4_id": "L4_INTERVIEW",
+      "l3_id": "L3_RECRUITING",
+      "name": "Conduct Interviews",
+      "description": "Schedule and conduct interviews with shortlisted candidates."
+    },
+    {
+      "l4_id": "L4_OFFER",
+      "l3_id": "L3_RECRUITING",
+      "name": "Create Offer",
+      "description": "Prepare and issue an offer to the selected candidate."
+    }
+  ]
+  

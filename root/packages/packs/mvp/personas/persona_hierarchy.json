@@ -1,0 +1,18 @@
+[
+    {
+      "persona_id": "P_MANAGER",
+      "reports_to": null,
+      "team": ["P_RECRUITER"]
+    },
+    {
+      "persona_id": "P_RECRUITER",
+      "reports_to": "P_MANAGER",
+      "team": []
+    },
+    {
+      "persona_id": "P_HR_ADMIN",
+      "reports_to": null,
+      "team": []
+    }
+  ]
+  
