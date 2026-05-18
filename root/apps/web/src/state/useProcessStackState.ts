@@ -88,6 +88,8 @@ export function useProcessStackState() {
   const [architectureView, setArchitectureView] = useState<"home" | "detail">("home");
   const [selectedSystemId, setSelectedSystemId] = useState(seed.systems[0]?.system_id || "");
 
+
+
   const [systemModuleInput, setSystemModuleInput] = useState("");
   const [envName, setEnvName] = useState("");
   const [envUrl, setEnvUrl] = useState("");
@@ -110,6 +112,14 @@ export function useProcessStackState() {
   const [selectedTransactionId, setSelectedTransactionId] = useState(
     seed.transactions[0].transaction_id
   );
+
+  // New modular tab selections
+  const [selectedDataModelId, setSelectedDataModelId] = useState<string>("");
+  const [selectedSystemRecordId, setSelectedSystemRecordId] = useState<string>("");
+  const [selectedIntegrationId, setSelectedIntegrationId] = useState<string>("");
+  const [selectedArchitectureId, setSelectedArchitectureId] = useState<string>("");
+  const [selectedProcessNodeId, setSelectedProcessNodeId] = useState<string>("");
+
 
   // Transaction linking state
   const [linkTargetId, setLinkTargetId] = useState("");
@@ -534,7 +544,7 @@ export function useProcessStackState() {
   }
 
 // Run Engine
-...
+
 exportRunJSON,
 
 // ================================================
@@ -557,8 +567,26 @@ useEffect(() => {
 // ================================================
 // END - Effects
 // ================================================
-
-
+function resetAllData() {
+    setData(seed);
+  
+    // Reset selections
+    setSelectedPersonaId(seed.personas?.[0]?.persona_id ?? "");
+    setSelectedTransactionId(seed.transactions?.[0]?.transaction_id ?? "");
+  
+    // Reset new modular selections
+    setSelectedDataModelId("");
+    setSelectedSystemRecordId("");
+    setSelectedIntegrationId("");
+    setSelectedArchitectureId("");
+    setSelectedProcessNodeId("");
+  
+    // Reset views
+    setPersonaView("home");
+    setArchitectureView("home");
+    setProcessesView("l2");
+  }
+  
    // ================================================
   // Return API
   // ================================================
@@ -570,7 +598,7 @@ useEffect(() => {
     data, setData,
     saveStatus, setSaveStatus,
     sidebarCollapsed, setSidebarCollapsed,
-
+  
     // -------------------------
     // Navigation State
     // -------------------------
@@ -581,7 +609,7 @@ useEffect(() => {
     selectedL3Id, setSelectedL3Id,
     selectedL4Id, setSelectedL4Id,
     l3ViewMode, setL3ViewMode,
-
+  
     // -------------------------
     // Persona State
     // -------------------------
@@ -591,7 +619,16 @@ useEffect(() => {
     createPersonaDraft, setCreatePersonaDraft,
     avatarPickerOpen, setAvatarPickerOpen,
     avatarSearch, setAvatarSearch,
-
+  
+    // -------------------------
+    // New modular tab selections
+    // -------------------------
+    selectedDataModelId, setSelectedDataModelId,
+    selectedSystemRecordId, setSelectedSystemRecordId,
+    selectedIntegrationId, setSelectedIntegrationId,
+    selectedArchitectureId, setSelectedArchitectureId,
+    selectedProcessNodeId, setSelectedProcessNodeId,
+  
     // -------------------------
     // System State
     // -------------------------
@@ -606,34 +643,42 @@ useEffect(() => {
     roleType, setRoleType,
     roleName, setRoleName,
     roleDesc, setRoleDesc,
-
+  
     // -------------------------
     // Transaction State
     // -------------------------
     selectedTransactionId, setSelectedTransactionId,
-
+  
+    // -------------------------
     // Linking
+    // -------------------------
     linkTargetId, setLinkTargetId,
     linkLabel, setLinkLabel,
     linkCondition, setLinkCondition,
     linkType, setLinkType,
     linkDirection, setLinkDirection,
-
+  
+    // -------------------------
     // Steps
+    // -------------------------
     stepDraft, setStepDraft,
     editStepOpen, setEditStepOpen,
     editStepId, setEditStepId,
-
+  
+    // -------------------------
     // System Actions
+    // -------------------------
     actionDraft, setActionDraft,
     editActionOpen, setEditActionOpen,
     editActionId, setEditActionId,
-
+  
+    // -------------------------
     // Emitted Events
+    // -------------------------
     eventDraft, setEventDraft,
     editEventOpen, setEditEventOpen,
     editEventIndex, setEditEventIndex,
-
+  
     // -------------------------
     // Derived Values
     // -------------------------
@@ -643,7 +688,7 @@ useEffect(() => {
     personaOptions,
     trxOptions,
     systemOptions,
-
+  
     // -------------------------
     // Persona Actions
     // -------------------------
@@ -651,12 +696,12 @@ useEffect(() => {
     openCreatePersona,
     closeCreatePersona,
     getAvatarForPersona,
-
+  
     // -------------------------
     // System Actions
     // -------------------------
     updateSystem,
-
+  
     // -------------------------
     // Transaction Actions
     // -------------------------
@@ -664,30 +709,30 @@ useEffect(() => {
     addTransactionLink,
     removeTransactionLink,
     openProcessStepFromTransaction,
-
+  
     // Steps
     addStepFromDraft,
     openEditStep,
     saveEditStep,
     deleteStep,
-
+  
     // System Actions (inside transactions)
     addSystemActionFromDraft,
     openEditSystemAction,
     saveEditSystemAction,
     deleteSystemAction,
-
+  
     // Emitted Events
     addEmittedEventFromDraft,
     openEditEmittedEvent,
     saveEditEmittedEvent,
     deleteEmittedEvent,
-
+  
     // -------------------------
     // Global Actions
     // -------------------------
     resetAllData,
-
+  
     // -------------------------
     // Run Engine
     // -------------------------
@@ -700,5 +745,4 @@ useEffect(() => {
     prevStep,
     updateEvidence,
     exportRunJSON,
-  };
-}
+  }};
