@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { seed } from "../metadata/seed";
-import { loadFromStorage, STORAGE_KEY } from "../utils/storage";
+import { loadFromStorage, saveToStorage, STORAGE_KEY } from "../utils/storage";
 import { uid } from "../utils/helpers";
 import { AVATAR_BANK } from "../avatarBank";
 
@@ -195,7 +195,133 @@ export function useProcessStackState() {
     value: s.name,
     label: s.name
   }));
+// -------------------------
+  // Persona Actions
+  // -------------------------
+  function openCreatePersona() {
+    setCreatePersonaOpen(true);
+    setCreatePersonaDraft({
+      display_name: "",
+      description: "",
+      persona_type: "Human" as PersonaType,
+      avatar_id: ""
+    });
+  }
 
+  function closeCreatePersona() {
+    setCreatePersonaOpen(false);
+  }
+
+  function getAvatarForPersona(p: Persona | undefined | null) {
+    const avatarId = p?.avatar_id || "";
+    const found = AVATAR_BANK.find((a: any) => a.id === avatarId);
+    return found ?? AVATAR_BANK[0];
+  }
+
+  function createPersonaFromModal() {
+    const name = (createPersonaDraft.display_name || "").trim();
+    if (!name) return;
+
+    const newId = `PER-${uid()}`;
+    const avatar_id =
+      (createPersonaDraft.avatar_id || "").trim() || (AVATAR_BANK[0]?.id ?? "");
+
+    const newPersona: Persona = {
+      persona_id: newId,
+      persona_type: createPersonaDraft.persona_type,
+      display_name: name,
+      description: (createPersonaDraft.description || "").trim(),
+      status: "Active",
+      version: "v1",
+      roles: [],
+      capabilities: [],
+      system_mappings: [],
+      avatar_id
+    };
+
+    setData((d: any) => ({
+      ...d,
+      personas: [...(d.personas ?? []), newPersona]
+    }));
+
+    setSelectedPersonaId(newId);
+    setPersonaView("detail");
+    setCreatePersonaOpen(false);
+
+    // reset draft for next time
+    setCreatePersonaDraft({
+      display_name: "",
+      description: "",
+      persona_type: "Human" as PersonaType,
+      avatar_id: ""
+    });
+  }
+
+  // -------------------------
+  // System Actions
+  // -------------------------
+  function updateSystem(
+    patchOrUpdater: Partial<SystemModel> | ((s: SystemModel) => SystemModel)
+  ) {
+    setData((d: any) => {
+      const systems: SystemModel[] = Array.isArray(d.systems) ? d.systems : [];
+      const next = systems.map((s) => {
+        if (s.system_id !== selectedSystemId) return s;
+        return typeof patchOrUpdater === "function"
+          ? (patchOrUpdater as any)(s)
+          : { ...s, ...patchOrUpdater };
+      });
+      return { ...d, systems: next };
+    });
+  }
+
+  // -------------------------
+  // Transaction Actions
+  // -------------------------
+  function updateTransaction(
+    patchOrUpdater: Partial<Transaction> | ((t: Transaction) => Transaction)
+  ) {
+    if (!selectedTransactionId) return;
+
+    setData((d: any) => {
+      const txs: Transaction[] = Array.isArray(d.transactions) ? d.transactions : [];
+      const next = txs.map((t) => {
+        if (t.transaction_id !== selectedTransactionId) return t;
+        return typeof patchOrUpdater === "function"
+          ? (patchOrUpdater as any)(t)
+          : { ...t, ...patchOrUpdater };
+      });
+      return { ...d, transactions: next };
+    });
+  }
+
+  function addTransactionLink() {
+    const fromId = selectedTransactionId;
+    const toId = linkTargetId.trim();
+    if (!fromId || !toId) return;
+    if (fromId === toId) return;
+
+    const newLink: TransactionLink = {
+      id: `LNK-${uid()}`,
+      from: fromId,
+      to: toId,
+      type: linkType,
+      label: linkLabel.trim() || undefined,
+      condition: linkType === "conditional" ? (linkCondition.trim() || undefined) : undefined
+    };
+
+    setData((d: any) => ({
+      ...d,
+      transaction_links: [...(d.transaction_links ?? []), newLink]
+    }));
+
+    // reset link draft UI state
+    setLinkTargetId("");
+    setLinkLabel("");
+    setLinkCondition("");
+    setLinkType("mandatory");
+    setLinkDirection("next");
+  }
   // ================================================
   // CRUD & Helper Functions
   // ================================================
@@ -502,7 +628,11 @@ export function useProcessStackState() {
   }
 
   const runPersona = personasById.get(run.persona_id);
-  const runTransaction = data.transactions.find((t) => t.transaction_id === run.transaction_id);
+  
+const runTransaction = (data.transactions ?? []).find(
+  (t) => t.transaction_id === run.transaction_id
+);
+
   const currentStep = runTransaction?.steps?.[run.step_index];
 
   function nextStep() {
