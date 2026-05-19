@@ -1,10 +1,10 @@
-import { useProcessStackState } from "./src/state/useProcessStackState";
-import PersonasTab from "./src/tabs/PersonasTab";
-import ProcessesTab from "./src/tabs/ProcessesTab";
-import DataModelsTab from "./src/tabs/DataModelsTab";
-import SystemsTab from "./src/tabs/SystemsTab";
-import IntegrationsTab from "./src/tabs/IntegrationsTab";
-import ArchitectureTab from "./src/tabs/ArchitectureTab";
+import { useProcessStackState } from "./state/useProcessStackState";
+import PersonasTab from "./tabs/PersonasTab";
+import ProcessesTab from "./tabs/ProcessesTab";
+import DataModelsTab from "./tabs/DataModelsTab";
+import SystemsTab from "./tabs/SystemsTab";
+import IntegrationsTab from "./tabs/IntegrationsTab";
+import ArchitectureTab from "./tabs/ArchitectureTab";
 
 export default function App() {
   const { tab } = useProcessStackState();
