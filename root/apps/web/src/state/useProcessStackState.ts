@@ -3,7 +3,7 @@ import { seed } from "../metadata/seed";
 import { loadFromStorage, saveToStorage, STORAGE_KEY } from "../utils/storage";
 import { uid } from "../utils/helpers";
 import { AVATAR_BANK } from "../avatarBank";
-import { Panel, Button, Input, Select } from "../components/ui-primitives";
+import { Panel, Button, Input, Select } from "../../components/ui-primitives";
 
 import type {
   Persona,
