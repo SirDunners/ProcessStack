@@ -2,9 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 
-import { WorkspaceProvider } from "./workspace-loader";
-import { PackProvider } from "./pack-loader";
-import { MetadataProvider } from "./metadata";
+import { WorkspaceProvider } from "./src/workspace-loader";
+import { PackProvider } from "./src/pack-loader";
+import { MetadataProvider } from "./src/metadata";
 
 const WORKSPACE_ID = "clientA";
 

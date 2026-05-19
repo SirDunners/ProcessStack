@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { usePacks } from "../pack-loader";
-import { mergeMetadata } from "./loadMetadata";
+
 import type { Metadata } from "./metadataTypes";
 
 const MetadataContext = createContext<Metadata | null>(null);
