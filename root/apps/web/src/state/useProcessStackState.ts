@@ -110,7 +110,7 @@ export function useProcessStackState() {
     seed.personas?.[0]?.persona_id ?? ""
   );
   const [selectedTransactionId, setSelectedTransactionId] = useState(
-    seed.transactions[0].transaction_id
+    seed.transactions?.[0]?.transaction_id ?? ""
   );
 
   // New modular tab selections
@@ -179,15 +179,17 @@ export function useProcessStackState() {
     );
   }, [data.transactions, selectedTransactionId]);
 
-  const personaOptions = data.personas.map((p) => ({
+
+  const personaOptions = (data.personas ?? []).map((p) => ({
     value: p.persona_id,
     label: p.display_name
   }));
-
-  const trxOptions = data.transactions.map((t) => ({
+  
+  const trxOptions = (data.transactions ?? []).map((t) => ({
     value: t.transaction_id,
     label: t.name
   }));
+  
 
   const systemOptions = (data.systems ?? []).map((s: SystemModel) => ({
     value: s.name,
@@ -543,51 +545,48 @@ export function useProcessStackState() {
     alert("Copied run JSON to clipboard");
   }
 
-// Run Engine
+  // ================================================
+  // START - Effects
+  // ================================================
+  useEffect(() => {
+    if (tab === "personas") setPersonaView("home");
+  }, [tab]);
 
-exportRunJSON,
+  useEffect(() => {
+    if (tab === "architecture") setArchitectureView("home");
+  }, [tab]);
 
-// ================================================
-// START - Effects
-// ================================================
-useEffect(() => {
-  if (tab === "personas") setPersonaView("home");
-}, [tab]);
+  useEffect(() => {
+    saveToStorage(data);
+    setSaveStatus("saved");
+    const t = setTimeout(() => setSaveStatus("idle"), 1000);
+    return () => clearTimeout(t);
+  }, [data]);
+  // ================================================
+  // END - Effects
+  // ================================================
 
-useEffect(() => {
-  if (tab === "architecture") setArchitectureView("home");
-}, [tab]);
-
-useEffect(() => {
-  saveToStorage(data);
-  setSaveStatus("saved");
-  const t = setTimeout(() => setSaveStatus("idle"), 1000);
-  return () => clearTimeout(t);
-}, [data]);
-// ================================================
-// END - Effects
-// ================================================
-function resetAllData() {
+  function resetAllData() {
     setData(seed);
-  
+
     // Reset selections
     setSelectedPersonaId(seed.personas?.[0]?.persona_id ?? "");
     setSelectedTransactionId(seed.transactions?.[0]?.transaction_id ?? "");
-  
+
     // Reset new modular selections
     setSelectedDataModelId("");
     setSelectedSystemRecordId("");
     setSelectedIntegrationId("");
     setSelectedArchitectureId("");
     setSelectedProcessNodeId("");
-  
+
     // Reset views
     setPersonaView("home");
     setArchitectureView("home");
     setProcessesView("l2");
   }
-  
-   // ================================================
+
+  // ================================================
   // Return API
   // ================================================
   return {
@@ -598,7 +597,7 @@ function resetAllData() {
     data, setData,
     saveStatus, setSaveStatus,
     sidebarCollapsed, setSidebarCollapsed,
-  
+
     // -------------------------
     // Navigation State
     // -------------------------
@@ -609,7 +608,7 @@ function resetAllData() {
     selectedL3Id, setSelectedL3Id,
     selectedL4Id, setSelectedL4Id,
     l3ViewMode, setL3ViewMode,
-  
+
     // -------------------------
     // Persona State
     // -------------------------
@@ -619,7 +618,7 @@ function resetAllData() {
     createPersonaDraft, setCreatePersonaDraft,
     avatarPickerOpen, setAvatarPickerOpen,
     avatarSearch, setAvatarSearch,
-  
+
     // -------------------------
     // New modular tab selections
     // -------------------------
@@ -628,7 +627,7 @@ function resetAllData() {
     selectedIntegrationId, setSelectedIntegrationId,
     selectedArchitectureId, setSelectedArchitectureId,
     selectedProcessNodeId, setSelectedProcessNodeId,
-  
+
     // -------------------------
     // System State
     // -------------------------
@@ -643,12 +642,12 @@ function resetAllData() {
     roleType, setRoleType,
     roleName, setRoleName,
     roleDesc, setRoleDesc,
-  
+
     // -------------------------
     // Transaction State
     // -------------------------
     selectedTransactionId, setSelectedTransactionId,
-  
+
     // -------------------------
     // Linking
     // -------------------------
@@ -657,28 +656,28 @@ function resetAllData() {
     linkCondition, setLinkCondition,
     linkType, setLinkType,
     linkDirection, setLinkDirection,
-  
+
     // -------------------------
     // Steps
     // -------------------------
     stepDraft, setStepDraft,
     editStepOpen, setEditStepOpen,
     editStepId, setEditStepId,
-  
+
     // -------------------------
     // System Actions
     // -------------------------
     actionDraft, setActionDraft,
     editActionOpen, setEditActionOpen,
     editActionId, setEditActionId,
-  
+
     // -------------------------
     // Emitted Events
     // -------------------------
     eventDraft, setEventDraft,
     editEventOpen, setEditEventOpen,
     editEventIndex, setEditEventIndex,
-  
+
     // -------------------------
     // Derived Values
     // -------------------------
@@ -688,7 +687,7 @@ function resetAllData() {
     personaOptions,
     trxOptions,
     systemOptions,
-  
+
     // -------------------------
     // Persona Actions
     // -------------------------
@@ -696,12 +695,12 @@ function resetAllData() {
     openCreatePersona,
     closeCreatePersona,
     getAvatarForPersona,
-  
+
     // -------------------------
     // System Actions
     // -------------------------
     updateSystem,
-  
+
     // -------------------------
     // Transaction Actions
     // -------------------------
@@ -709,30 +708,30 @@ function resetAllData() {
     addTransactionLink,
     removeTransactionLink,
     openProcessStepFromTransaction,
-  
+
     // Steps
     addStepFromDraft,
     openEditStep,
     saveEditStep,
     deleteStep,
-  
+
     // System Actions (inside transactions)
     addSystemActionFromDraft,
     openEditSystemAction,
     saveEditSystemAction,
     deleteSystemAction,
-  
+
     // Emitted Events
     addEmittedEventFromDraft,
     openEditEmittedEvent,
     saveEditEmittedEvent,
     deleteEmittedEvent,
-  
+
     // -------------------------
     // Global Actions
     // -------------------------
     resetAllData,
-  
+
     // -------------------------
     // Run Engine
     // -------------------------
@@ -745,4 +744,5 @@ function resetAllData() {
     prevStep,
     updateEvidence,
     exportRunJSON,
-  }};
+  };
+}
