@@ -1,7 +1,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { usePacks } from "../pack-loader";
-import { mergeMetadata } from "./loadMetadata.ts";
+import { mergeMetadata } from "./loadMetadata";
 import type { Metadata } from "./metadataTypes";
 
 const MetadataContext = createContext<Metadata | null>(null);
@@ -26,7 +26,11 @@ export function MetadataProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useMetadata() {
-  return useContext(MetadataContext);
+
+export function useMetadata(): Metadata {
+  const ctx = useContext(MetadataContext);
+  if (!ctx) throw new Error("useMetadata must be used within a MetadataProvider");
+  return ctx;
 }
+
 
