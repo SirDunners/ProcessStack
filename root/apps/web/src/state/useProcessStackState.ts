@@ -3,6 +3,7 @@ import { seed } from "../metadata/seed";
 import { loadFromStorage, saveToStorage, STORAGE_KEY } from "../utils/storage";
 import { uid } from "../utils/helpers";
 import { AVATAR_BANK } from "../avatarBank";
+import { Panel, Button, Input, Select } from "../components/ui-primitives";
 
 import type {
   Persona,
@@ -19,9 +20,21 @@ import type {
 
 export function useProcessStackState() {
   // Tabs
-  const [tab, setTab] = useState<
-    "home" | "architecture" | "processes" | "transactions" | "personas" | "dataModels" | "run"
-  >("home");
+
+  
+const [tab, setTab] = useState<
+| "home"
+| "architecture"
+| "processes"
+| "transactions"
+| "personas"
+| "dataModels"
+| "systems"
+| "integrations"
+| "run"
+>("home");
+
+
 
   const [transactionsInitialView, setTransactionsInitialView] =
     useState<"list" | "detail">("list");
@@ -191,10 +204,12 @@ export function useProcessStackState() {
   }));
   
 
+
   const systemOptions = (data.systems ?? []).map((s: SystemModel) => ({
-    value: s.name,
+    value: s.system_id,
     label: s.name
   }));
+  
 // -------------------------
   // Persona Actions
   // -------------------------
@@ -214,7 +229,7 @@ export function useProcessStackState() {
 
   function getAvatarForPersona(p: Persona | undefined | null) {
     const avatarId = p?.avatar_id || "";
-    const found = AVATAR_BANK.find((a: any) => a.id === avatarId);
+    const found = AVATAR_BANK.find((a) => a.avatar_id === avatarId);
     return found ?? AVATAR_BANK[0];
   }
 
@@ -223,8 +238,10 @@ export function useProcessStackState() {
     if (!name) return;
 
     const newId = `PER-${uid()}`;
+
     const avatar_id =
-      (createPersonaDraft.avatar_id || "").trim() || (AVATAR_BANK[0]?.id ?? "");
+    (createPersonaDraft.avatar_id || "").trim() || (AVATAR_BANK[0]?.avatar_id ?? "");
+  
 
     const newPersona: Persona = {
       persona_id: newId,
@@ -844,6 +861,14 @@ const runTransaction = (data.transactions ?? []).find(
     openEditStep,
     saveEditStep,
     deleteStep,
+
+
+    // UI primitives (legacy pattern used by List components)
+    Panel,
+    Button,
+    Input,
+    Select,
+
 
     // System Actions (inside transactions)
     addSystemActionFromDraft,
