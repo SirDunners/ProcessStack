@@ -1,3 +1,4 @@
+// PersonaResponsibilitiesPanel.tsx
 import React, { useState } from "react";
 import { useProcessStackState } from "../../../state/useProcessStackState";
 
@@ -22,9 +23,11 @@ export default function PersonaResponsibilitiesPanel({ persona }: any) {
       <Textarea
         value={text}
         onChange={setText}
-        placeholder="Describe this persona's responsibilities..."
+        placeholder="Describe this persona's key responsibilities..."
       />
-      <button onClick={save}>Save</button>
+      <button onClick={save} style={{ marginTop: 12, padding: "8px 16px" }}>
+        Save
+      </button>
     </Panel>
   );
 }

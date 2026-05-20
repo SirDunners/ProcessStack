@@ -1,3 +1,4 @@
+// PersonaBasicsPanel.tsx
 import React, { useState } from "react";
 import { useProcessStackState } from "../../../state/useProcessStackState";
 
@@ -7,7 +8,6 @@ export default function PersonaBasicsPanel({ persona }: any) {
   const [draft, setDraft] = useState({
     display_name: persona.display_name ?? "",
     description: persona.description ?? "",
-    avatar: persona.avatar ?? "",
   });
 
   const save = () => {
@@ -19,7 +19,6 @@ export default function PersonaBasicsPanel({ persona }: any) {
               ...p,
               display_name: draft.display_name.trim(),
               description: draft.description.trim(),
-              avatar: draft.avatar.trim(),
             }
           : p
       ),
@@ -28,20 +27,12 @@ export default function PersonaBasicsPanel({ persona }: any) {
 
   return (
     <Panel title="Basics">
-      <div style={{ display: "grid", gap: 10 }}>
+      <div style={{ display: "grid", gap: 12 }}>
         <div>
           <div style={{ fontSize: 12, color: "#6b7280" }}>Name</div>
           <Input
             value={draft.display_name}
             onChange={(v) => setDraft((d) => ({ ...d, display_name: v }))}
-          />
-        </div>
-
-        <div>
-          <div style={{ fontSize: 12, color: "#6b7280" }}>Avatar URL</div>
-          <Input
-            value={draft.avatar}
-            onChange={(v) => setDraft((d) => ({ ...d, avatar: v }))}
           />
         </div>
 
@@ -53,7 +44,9 @@ export default function PersonaBasicsPanel({ persona }: any) {
           />
         </div>
 
-        <button onClick={save}>Save</button>
+        <button onClick={save} style={{ padding: "8px 16px" }}>
+          Save Changes
+        </button>
       </div>
     </Panel>
   );

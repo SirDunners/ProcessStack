@@ -1,16 +1,12 @@
+// main.tsx
 import React from "react";
 import ReactDOM from "react-dom/client";
+
 import App from "./App";
 
-
-
-
-import { MetadataProvider } from "./metadata";
 import { WorkspaceProvider } from "./workspace-loader";
 import { PackProvider } from "./pack-loader";
-
-
-
+import { MetadataProvider } from "./metadata";
 
 const WORKSPACE_ID = "clientA";
 
