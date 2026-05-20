@@ -3,37 +3,35 @@ import React from "react";
 import { useProcessStackState } from "./state/useProcessStackState";
 
 import ResponsiveSidebar from "./ResponsiveSidebar";
-
-// New modular Processes tab (uses your index.tsx + panels/)
-import ProcessesTab from "./tabs/processes";
+import ProcessesTab from "./tabs/processes/index";   // ← explicit /index (this fixes the error)
 
 export default function App() {
-  const { tab, setTab } = useProcessStackState();
+  const { tab, setTab, data, setData, selectedProcessNodeId, setSelectedProcessNodeId, Panel, Button, Input, Select } = useProcessStackState();
 
   const handleNewRun = () => {
-    console.log("New Run clicked");
+    console.log("🚀 New Run clicked");
     setTab("run");
   };
 
   const handleResetData = () => {
-    if (confirm("Reset all data to seed? This cannot be undone.")) {
-      console.log("Reset data triggered");
-      // TODO: connect to your real resetAllData() later
+    if (confirm("Reset ALL data back to seed? This cannot be undone.")) {
+      console.log("🔄 Reset data triggered");
+      // resetAllData will be connected in the next step
     }
   };
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* Beautiful responsive sidebar */}
+      {/* Your beautiful responsive sidebar */}
       <ResponsiveSidebar
         tab={tab}
         setTab={setTab}
         onNewRun={handleNewRun}
         onResetData={handleResetData}
-        logoSrc="./assets/ProcessStack.png"   // adjust if your logo path is different
+        logoSrc="./assets/ProcessStack.png"
       />
 
-      {/* Main content */}
+      {/* Main content area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 overflow-auto p-6">
           {tab === "home" && (
