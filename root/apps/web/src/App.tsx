@@ -1,12 +1,10 @@
 // App.tsx
 import React from "react";
 import { useProcessStackState } from "./state/useProcessStackState";
-
 import ResponsiveSidebar from "./ResponsiveSidebar";
-import ProcessesTab from "./tabs/processes/index";   // ← explicit /index (this fixes the error)
 
 export default function App() {
-  const { tab, setTab, data, setData, selectedProcessNodeId, setSelectedProcessNodeId, Panel, Button, Input, Select } = useProcessStackState();
+  const { tab, setTab } = useProcessStackState();
 
   const handleNewRun = () => {
     console.log("🚀 New Run clicked");
@@ -14,15 +12,14 @@ export default function App() {
   };
 
   const handleResetData = () => {
-    if (confirm("Reset ALL data back to seed? This cannot be undone.")) {
-      console.log("🔄 Reset data triggered");
-      // resetAllData will be connected in the next step
+    if (confirm("Reset all data to seed?")) {
+      console.log("🔄 Reset data clicked");
     }
   };
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* Your beautiful responsive sidebar */}
+      {/* Sidebar — this is what you wanted working first */}
       <ResponsiveSidebar
         tab={tab}
         setTab={setTab}
@@ -31,23 +28,25 @@ export default function App() {
         logoSrc="./assets/ProcessStack.png"
       />
 
-      {/* Main content area */}
+      {/* Main content frame */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-auto p-6">
+        <div className="flex-1 overflow-auto p-8">
           {tab === "home" && (
-            <div className="max-w-4xl mx-auto">
-              <h1 className="text-4xl font-bold tracking-tight mb-2">Welcome to Process Stack</h1>
-              <p className="text-gray-600">Your process intelligence platform.</p>
+            <div className="max-w-2xl mx-auto">
+              <h1 className="text-5xl font-bold tracking-tight mb-4">Welcome to Process Stack</h1>
+              <p className="text-xl text-gray-600">
+                ✅ Sidebar is now working cleanly.<br />
+                Click any menu item on the left to test navigation.
+              </p>
             </div>
           )}
 
-          {tab === "processes" && <ProcessesTab />}
-
-          {tab === "transactions" && <div className="text-xl font-medium">Transactions Tab — coming next</div>}
-          {tab === "personas" && <div className="text-xl font-medium">Personas Tab — coming next</div>}
-          {tab === "architecture" && <div className="text-xl font-medium">Architecture Tab — coming next</div>}
-          {tab === "dataModels" && <div className="text-xl font-medium">Data Models Tab — coming next</div>}
-          {tab === "run" && <div className="text-xl font-medium">Run / Evidence Tab — coming next</div>}
+          {tab !== "home" && (
+            <div className="max-w-2xl mx-auto">
+              <h2 className="text-3xl font-semibold">Current tab: {tab}</h2>
+              <p className="mt-6 text-gray-500">We'll build the other tabs one by one (starting with Processes next).</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
